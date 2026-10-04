@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+
+# Keep machine-specific and secret environment files out of the repository.
+.env*
+!.env.example
+
+# Local operating system and build artifacts.
+.DS_Store
+*.tsbuildinfo
+*.log

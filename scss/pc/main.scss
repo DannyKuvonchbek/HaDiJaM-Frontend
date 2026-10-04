@@ -1,0 +1,14 @@
+// Desktop styles are grouped by shared layout and product area.
+@use "./general";
+@use "./homepage/homepage";
+@use "./catalog/catalog";
+@use "./product/detail";
+@use "./services/services";
+@use "./cart/cart";
+@use "./account/account";
+@use "./account/mypage";
+@use "./about/about";
+@use "./orders/confirmation";
+@use "./seller/add-product";
+@use "./contact/contact";
+@use "./typography";

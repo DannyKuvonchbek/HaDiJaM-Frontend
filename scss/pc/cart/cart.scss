@@ -1,0 +1,121 @@
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1.35fr 0.75fr;
+  gap: 50px;
+  padding-top: 45px;
+  padding-bottom: 100px;
+}
+.cart-title-row {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 13px;
+  color: #cbb46e;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+}
+.cart-title-row span:last-child {
+  color: #898174;
+  letter-spacing: normal;
+}
+.cart-line {
+  display: grid;
+  grid-template-columns: 100px 1fr auto 32px;
+  align-items: center;
+  gap: 17px;
+  padding: 19px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.cart-line > img {
+  width: 100px;
+  height: 110px;
+  object-fit: cover;
+}
+.cart-line-copy > span {
+  color: #b69b55;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.cart-line-copy h2 {
+  margin: 6px 0;
+  font-family: var(--font-playfair);
+  font-size: 19px;
+  font-weight: 400;
+}
+.cart-line-copy p {
+  margin: 0;
+  color: #918a7f;
+  font-size: 8px;
+}
+.cart-line > strong {
+  color: var(--silk);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.cart-line > button {
+  color: #918a7f;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.cart-lines > .text-link {
+  margin-top: 21px;
+}
+.checkout-panel {
+  align-self: start;
+  padding: 24px;
+  background: #1a1917;
+  border: 1px solid rgba(212, 175, 55, 0.26);
+}
+.checkout-panel h2 {
+  margin: 14px 0 7px;
+  font-family: var(--font-playfair);
+  font-size: 24px;
+  font-weight: 400;
+}
+.checkout-panel > p {
+  margin: 0 0 20px;
+  color: #999286;
+  font-size: 9px;
+  line-height: 1.7;
+}
+.checkout-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 15px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #d2c9b7;
+  font-size: 9px;
+}
+.checkout-total strong {
+  color: var(--silk);
+  font-size: 12px;
+}
+.secure-note {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #a99657;
+  font-size: 8px;
+}
+.secure-note svg {
+  width: 14px;
+  height: 14px;
+}
+.checkout-button {
+  width: 100%;
+  margin-top: 16px;
+}
+.form-error {
+  color: #ff9e91;
+  font-size: 9px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.cart-empty {
+  grid-column: 1/-1;
+  min-height: 330px;
+}

@@ -1,0 +1,180 @@
+// Desktop typography: keep the editorial look while making supporting copy
+// readable at normal PC viewing distances. Mobile rules remain untouched.
+@media (min-width: 1101px) {
+  .top-ribbon { min-height: 34px; font-size: 10px; }
+  .brand-wordmark strong,
+  .footer-brand-lockup strong { font-size: 20px; }
+  .brand-wordmark small,
+  .footer-brand-lockup small { font-size: 9px; }
+  .desktop-nav { gap: clamp(16px, 2vw, 30px); }
+  .desktop-nav a { font-size: 13px; }
+  .language-button { font-size: 12px; }
+  .header-actions .MuiBadge-badge { font-size: 10px; }
+  .eyebrow { font-size: 11px; }
+  .button,
+  .text-link { font-size: 13px; }
+
+  .footer-brand p,
+  .footer-main p,
+  .footer-main > div:not(.footer-brand) { font-size: 13px; }
+  .footer-title { font-size: 11px; }
+  .footer-bottom { font-size: 10px; }
+
+  .hero-lede { font-size: 16px; }
+  .hero-buttons .button { font-size: 12px; }
+  .hero-assurances strong { font-size: 12px; }
+  .hero-assurances small { font-size: 10px; }
+  .hero-metrics span { font-size: 9px; }
+  .hero-metrics b { font-size: 14px; }
+  .section-heading h2,
+  .trust-intro h2,
+  .atelier-copy h2,
+  .salon-content h2 { font-size: 38px; }
+  .section-subtitle { font-size: 14px; }
+  .category-copy strong { font-size: 19px; }
+  .category-copy small { font-size: 11px; }
+  .home-product-filters button { font-size: 11px; }
+  .home-product-toolbar > span { font-size: 10px; }
+  .home-popular .product-name { font-size: 18px; }
+  .home-empty-products { font-size: 14px; }
+  .home-partner-copy p { font-size: 14px; }
+  .home-partner-copy .button { font-size: 12px; }
+  .home-service-image > span { font-size: 10px; }
+  .home-service-card h3 { font-size: 18px; }
+  .home-service-card p { min-height: 58px; font-size: 13px; }
+  .home-service-card > div > a { font-size: 14px; }
+  .home-trust-photo > span { font-size: 9px; }
+  .home-trust .trust-intro h2 { font-size: 38px; }
+  .home-trust .trust-intro > p { font-size: 14px; }
+  .home-trust .trust-grid h3 { font-size: 16px; }
+  .home-trust .trust-grid p { font-size: 12px; }
+  .home-trust .button { font-size: 12px; }
+  .home-review-stars { font-size: 13px; }
+  .home-review-stars span { font-size: 11px; }
+  .home-review-grid article > p { font-size: 13px; }
+  .home-review-person strong { font-size: 11px; }
+  .home-review-person small { font-size: 10px; }
+
+  .page-intro p,
+  .catalog-intro p,
+  .product-description,
+  .service-intro p,
+  .about-copy p,
+  .confirmation-copy p { font-size: 15px; }
+  .page-intro .eyebrow,
+  .catalog-count,
+  .catalog-filter-label,
+  .product-meta,
+  .service-meta,
+  .about-eyebrow,
+  .confirmation-step { font-size: 11px; }
+  .catalog-search input,
+  .catalog-sort select,
+  .catalog-filter button,
+  .product-description-list,
+  .product-detail-meta { font-size: 14px; }
+  .product-card .product-name { font-size: 19px; }
+  .product-card .product-copy p { font-size: 14px; }
+  .product-card .product-price-row strong { font-size: 15px; }
+  .product-card .product-seller { font-size: 11px; }
+
+  .service-card h3 { font-size: 24px; }
+  .service-card p,
+  .service-process p,
+  .service-modal p { font-size: 14px; }
+  .service-card .eyebrow,
+  .service-process span,
+  .service-modal label { font-size: 11px; }
+
+  .cart-item h2 { font-size: 23px; }
+  .cart-item p,
+  .cart-summary p,
+  .cart-empty p { font-size: 14px; }
+  .cart-item-price,
+  .cart-summary-row { font-size: 14px; }
+  .cart-item-meta,
+  .cart-summary-label { font-size: 11px; }
+
+  .account-form label,
+  .account-form .form-note,
+  .account-card p,
+  .account-provider-button { font-size: 13px; }
+  .account-form input,
+  .account-form select { font-size: 14px; }
+  .account-form .eyebrow,
+  .account-form small { font-size: 11px; }
+
+  .account-portal-heading .eyebrow,
+  .account-panel-heading .eyebrow,
+  .account-security > .eyebrow,
+  .account-role-gateways > .eyebrow { font-size: 11px; }
+  .account-profile-card > h2 { font-size: 21px; }
+  .client-id,
+  .account-handle,
+  .account-tabs button,
+  .account-profile-form label,
+  .account-profile-form input,
+  .account-profile-form textarea,
+  .account-panel-heading p,
+  .account-contact-details b,
+  .account-security span,
+  .account-active-gateway,
+  .account-seller-gateway,
+  .account-order-piece p,
+  .account-order-bottom,
+  .account-saved-copy > button,
+  .account-empty p,
+  .account-feedback { font-size: 12px; }
+  .account-role-pill,
+  .account-stats small,
+  .account-contact-details small,
+  .account-security b,
+  .account-active-gateway b,
+  .account-seller-gateway small,
+  .account-order-meta,
+  .account-status-pill,
+  .account-progress-labels span,
+  .account-saved-copy > span { font-size: 10px; }
+  .account-stats b { font-size: 18px; }
+  .account-order-piece h3 { font-size: 18px; }
+  .account-order-price > b { font-size: 15px; }
+  .account-saved-copy h3 { font-size: 17px; }
+  .account-saved-copy > b { font-size: 14px; }
+
+  .seller-sidebar nav a,
+  .seller-sidebar nav .seller-nav-disabled,
+  .seller-back,
+  .seller-store-link,
+  .seller-title-row p,
+  .seller-panel-heading p,
+  .seller-field,
+  .seller-field input,
+  .seller-field select,
+  .seller-field textarea,
+  .seller-category-field legend,
+  .seller-dropzone > p,
+  .seller-publish-panel > p,
+  .seller-feedback { font-size: 13px; }
+  .seller-brand small,
+  .seller-vault-status,
+  .seller-breadcrumb,
+  .seller-draft-button,
+  .seller-panel-heading code,
+  .seller-field > span small,
+  .seller-field > small,
+  .seller-category-field legend small,
+  .seller-category-options button b,
+  .seller-dropzone > button,
+  .seller-dropzone > small,
+  .seller-payment-note b,
+  .seller-payment-note span,
+  .seller-assay-note span,
+  .seller-security-line,
+  .seller-submit-bar > div:first-child b,
+  .seller-submit-bar > div:first-child small,
+  .seller-submit-actions > a,
+  .seller-submit-actions .button { font-size: 11px; }
+  .seller-panel-heading h2 { font-size: 22px; }
+  .seller-dropzone > b { font-size: 18px; }
+  .seller-aside-heading h2 { font-size: 20px; }
+}

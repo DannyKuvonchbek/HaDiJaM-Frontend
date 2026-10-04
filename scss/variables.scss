@@ -1,0 +1,24 @@
+/** HaDiJaM design tokens shared across desktop and mobile styles. */
+$font-playfair: "Playfair Display", Georgia, serif;
+$font-jakarta: "DM Sans", Arial, sans-serif;
+$color-obsidian: #0b0b0b;
+$color-canvas: #131313;
+$color-surface: #1c1b1b;
+$color-gold: #d4af37;
+$color-champagne: #e5c158;
+$color-silk: #f3e5ab;
+$color-muted: #bdb8af;
+
+:root {
+	color-scheme: dark;
+	--font-playfair: "Playfair Display";
+	--font-jakarta: "DM Sans";
+	--obsidian: #{$color-obsidian};
+	--canvas: #{$color-canvas};
+	--surface: #{$color-surface};
+	--gold: #{$color-gold};
+	--champagne: #{$color-champagne};
+	--silk: #{$color-silk};
+	--muted: #{$color-muted};
+	--line: rgba(212, 175, 55, 0.2);
+}

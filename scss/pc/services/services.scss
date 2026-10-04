@@ -1,0 +1,231 @@
+.service-page {
+  padding-top: 75px;
+  padding-bottom: 100px;
+}
+.service-intro-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 36px;
+}
+.service-intro-row h2,
+.service-process h2 {
+  margin: 14px 0 0;
+  font-family: var(--font-playfair);
+  font-weight: 400;
+  font-size: 43px;
+  line-height: 1.1;
+}
+.service-intro-row > p {
+  max-width: 390px;
+  color: #aaa397;
+  font-size: 10px;
+  line-height: 1.9;
+}
+.service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.service-card {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  min-height: 215px;
+  background: #191816;
+  border: 1px solid rgba(212, 175, 55, 0.16);
+}
+.service-card-image {
+  position: relative;
+  min-height: 215px;
+  overflow: hidden;
+}
+.service-card-image img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  filter: brightness(0.72) saturate(0.75);
+}
+.service-card-image > span {
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  color: #f2d16c;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+.service-card-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+}
+.service-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #b69b55;
+  font-size: 7px;
+  letter-spacing: 0.04em;
+}
+.service-meta svg {
+  width: 13px;
+  height: 13px;
+}
+.service-card-copy h3 {
+  margin: 12px 0 0;
+  font-family: var(--font-playfair);
+  font-size: 21px;
+  font-weight: 400;
+}
+.service-card-copy p {
+  min-height: 45px;
+  margin: 7px 0 12px;
+  color: #999286;
+  font-size: 9px;
+  line-height: 1.75;
+}
+.service-card-copy .text-link {
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  font-size: 9px;
+}
+.service-process {
+  margin-top: 87px;
+  padding: 43px;
+  border: 1px solid rgba(212, 175, 55, 0.19);
+  background:
+    radial-gradient(
+      ellipse at 80% 0%,
+      rgba(212, 175, 55, 0.1),
+      transparent 40%
+    ),
+    #171614;
+}
+.service-process h2 {
+  font-size: 35px;
+}
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 40px;
+}
+.process-steps > div {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  border-top: 1px solid rgba(212, 175, 55, 0.25);
+  padding-top: 13px;
+}
+.process-steps span {
+  color: var(--gold);
+  font-family: var(--font-playfair);
+  font-size: 19px;
+}
+.process-steps p {
+  max-width: 145px;
+  margin: 3px 0;
+  color: #c6beb0;
+  font-size: 9px;
+  line-height: 1.7;
+}
+.modal-backdrop {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.76);
+  backdrop-filter: blur(7px);
+}
+.booking-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(490px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 37px;
+  background: #1b1a18;
+  border: 1px solid rgba(212, 175, 55, 0.43);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+}
+.modal-close {
+  position: absolute;
+  top: 13px;
+  right: 16px;
+  color: #cfc7b7;
+  background: none;
+  border: 0;
+  font-size: 25px;
+  cursor: pointer;
+}
+.booking-modal h2 {
+  margin: 15px 0 0;
+  font-family: var(--font-playfair);
+  font-size: 31px;
+  font-weight: 400;
+}
+.booking-modal > p {
+  margin: 10px 0 21px;
+  color: #aaa397;
+  font-size: 10px;
+  line-height: 1.8;
+}
+.booking-modal label,
+.checkout-panel label {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 13px;
+  color: #c8bd9e;
+  font-size: 8px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.booking-modal input,
+.booking-modal textarea,
+.checkout-panel input,
+.checkout-panel textarea {
+  width: 100%;
+  padding: 11px 12px;
+  resize: vertical;
+  color: #eee9de;
+  background: #121211;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  outline: 0;
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.booking-modal input:focus,
+.booking-modal textarea:focus,
+.checkout-panel input:focus,
+.checkout-panel textarea:focus {
+  border-color: var(--gold);
+}
+.booking-form-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.booking-modal > .button {
+  margin-top: 5px;
+}
+.modal-login {
+  margin-top: 16px;
+  color: #aaa397;
+  font-size: 9px;
+  text-decoration: underline;
+}
