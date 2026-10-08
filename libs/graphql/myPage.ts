@@ -68,6 +68,75 @@ export const GET_MY_ORDERS = gql`
   }
 `;
 
+export const GET_MY_SALON_RESERVATIONS = gql`
+  query GetMySalonReservations {
+    getMySalonReservations {
+      _id
+      reservationReference
+      reservationStatus
+      suiteName
+      bookingDate
+      bookingTime
+      guestName
+      guestContact
+      itemManifest
+      selectedAmenities
+      valetRequested
+    }
+  }
+`;
+
+export const GET_MY_SERVICE_BOOKINGS = gql`
+  query GetMyServiceBookings($input: ServiceBookingsInquiry!) {
+    getMyServiceBookings(input: $input) {
+      list {
+        _id
+        serviceId
+        serviceTitle
+        bookingReference
+        bookingDate
+        bookingTime
+        bookingStatus
+        bookingPrice
+        paymentStatus
+        selectedTechnician
+        selectedItems
+        itemDescription
+        itemPhoto
+        customerName
+        customerNote
+      }
+      metaCounter { total }
+    }
+  }
+`;
+
+export const DELETE_PAST_SALON_RESERVATION = gql`
+  mutation DeletePastSalonReservation($reservationId: String!) {
+    deletePastSalonReservation(reservationId: $reservationId)
+  }
+`;
+
+export const RESCHEDULE_MY_SALON_RESERVATION = gql`
+  mutation RescheduleMySalonReservation($input: SalonReservationRescheduleInput!) {
+    rescheduleMySalonReservation(input: $input) {
+      _id
+      bookingDate
+      bookingTime
+      reservationStatus
+    }
+  }
+`;
+
+export const CANCEL_MY_SALON_RESERVATION = gql`
+  mutation CancelMySalonReservation($reservationId: String!) {
+    cancelMySalonReservation(reservationId: $reservationId) {
+      _id
+      reservationStatus
+    }
+  }
+`;
+
 export const GET_MY_FAVORITES = gql`
   query GetMyFavorites($input: OrdinaryInquiry!) {
     getFavorites(input: $input) {

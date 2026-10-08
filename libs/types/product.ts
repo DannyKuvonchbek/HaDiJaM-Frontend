@@ -16,6 +16,8 @@ export interface Product {
   category: ProductCategory;
   badge: string;
   seller: string;
+  productLikes?: number;
+  meLiked?: { myFavorite: boolean }[];
 }
 
 export interface ApiProduct {
@@ -27,4 +29,5 @@ export interface ApiProduct {
   productDesc?: string;
   productStatus: string;
   productLikes?: number;
+  meLiked?: { myFavorite: boolean }[];
 }

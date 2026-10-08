@@ -29,13 +29,29 @@
   height: 100%;
   object-fit: cover;
 }
+.detail-main-image.chain-detail-image,
+.detail-main-image.ring-detail-image {
+  width: min(100%, 510px);
+  height: auto;
+  aspect-ratio: 1 / 1.02;
+  margin-inline: auto;
+  padding: 10px;
+  background: radial-gradient(ellipse at center, #26231d 0%, #141312 72%);
+}
+.detail-main-image.chain-detail-image img,
+.detail-main-image.ring-detail-image img {
+  object-fit: contain;
+}
 .detail-thumbnails {
   display: flex;
   gap: 10px;
   margin-top: 11px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 .detail-thumbnails button {
   width: 76px;
+  flex: 0 0 76px;
   height: 78px;
   overflow: hidden;
   padding: 0;
@@ -111,10 +127,16 @@
   flex: 1;
 }
 .detail-heart {
+  position: relative;
   width: 46px;
   border: 1px solid rgba(212, 175, 55, 0.42);
   color: var(--gold);
   background: transparent;
+  cursor: pointer;
+}
+.detail-heart .MuiSvgIcon-root.saved {
+  color: #ed3f52;
+  fill: #ed3f52;
 }
 .detail-assurances {
   display: grid;

@@ -11,6 +11,7 @@ export const GET_PRODUCTS = gql`
         productPrice
         productViews
         productLikes
+        meLiked { myFavorite }
         productComments
         productImages
         productDesc
@@ -34,6 +35,7 @@ export const GET_PRODUCT = gql`
       productPrice
       productViews
       productLikes
+      meLiked { myFavorite }
       productComments
       productImages
       productDesc
@@ -49,6 +51,7 @@ export const LIKE_PRODUCT = gql`
     likeTargetProduct(productId: $productId) {
       _id
       productLikes
+      meLiked { myFavorite }
     }
   }
 `;

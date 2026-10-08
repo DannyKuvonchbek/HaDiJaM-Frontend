@@ -1,4 +1,4 @@
-export type AccountTab = 'profile' | 'orders' | 'saved';
+export type AccountTab = 'profile' | 'orders' | 'saved' | 'salon' | 'services';
 
 export type MemberProfile = {
 	_id: string;

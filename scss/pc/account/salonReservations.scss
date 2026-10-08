@@ -1,0 +1,178 @@
+.salon-reservations-panel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #211f1b, #181716 72%);
+}
+.salon-reservations-heading,
+.salon-reservation-receipt-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.salon-reservations-heading span,
+.salon-reservation-receipt-heading span {
+  color: #e4bf46;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+.salon-reservations-heading h2 {
+  margin: 6px 0 0;
+  color: #f2ede2;
+  font: 500 27px/1.2 var(--font-playfair), Georgia, serif;
+}
+.salon-reservations-heading > b {
+  padding: 8px 12px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 99px;
+  color: #e9cf72;
+  background: #292720;
+  font-size: 12px;
+}
+.salon-reservations-state {
+  margin: 0;
+  padding: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 9px;
+  color: #c7c0b3;
+  background: #201f1d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.salon-reservations-state.error { color: #ffb8a8; }
+.salon-reservation-list { display: grid; gap: 13px; }
+.salon-reservation-receipt {
+  padding: 20px 22px 15px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  background: #1d1c1a;
+}
+.salon-reservation-receipt-heading h3 {
+  margin: 5px 0 0;
+  color: #eee9df;
+  font: 500 22px/1.25 var(--font-playfair), Georgia, serif;
+}
+.reservation-status {
+  padding: 7px 11px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 99px;
+  color: #f1d25d;
+  background: rgba(212, 175, 55, 0.08);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+.reservation-status.cancelled { color: #ffb8a8; border-color: rgba(255, 140, 120, 0.25); }
+.salon-reservation-receipt dl {
+  display: grid;
+  gap: 0;
+  margin: 15px 0 0;
+  padding: 6px 14px;
+  border: 1px solid rgba(212, 175, 55, 0.14);
+  border-radius: 8px;
+  background: #171615;
+}
+.salon-reservation-receipt dl > div {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.34fr) minmax(0, 1fr);
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+}
+.salon-reservation-receipt dl > div:last-child { border-bottom: 0; }
+.salon-reservation-receipt dt { color: #aaa293; font-size: 12px; }
+.salon-reservation-receipt dd { margin: 0; color: #eee8db; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.salon-reservation-receipt dl > div:first-child dd { color: #edca4e; font-weight: 700; }
+.salon-reservation-saved {
+  margin: 12px 0 0;
+  color: #8f887c;
+  font-size: 11px;
+}
+.salon-reservation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.salon-reservation-actions .salon-reservation-saved { min-width: 0; }
+.salon-reservation-delete {
+  display: inline-flex;
+  min-height: 34px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  border: 1px solid rgba(225, 133, 117, .28);
+  border-radius: 999px;
+  color: #efb2a7;
+  background: rgba(100, 40, 32, .16);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.salon-reservation-delete:hover:not(:disabled) { border-color: rgba(225, 133, 117, .6); background: rgba(100, 40, 32, .3); }
+.salon-reservation-delete:disabled { opacity: .55; cursor: wait; }
+.salon-reservation-delete svg { font-size: 16px; }
+.salon-reservation-buttons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.salon-reservation-reschedule,
+.salon-reservation-cancel,
+.salon-reservation-save,
+.salon-reservation-edit-cancel {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  border: 1px solid rgba(212, 175, 55, .26);
+  border-radius: 999px;
+  color: #e9d27a;
+  background: rgba(212, 175, 55, .07);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.salon-reservation-reschedule:hover:not(:disabled),
+.salon-reservation-save:hover:not(:disabled) { background: rgba(212, 175, 55, .16); }
+.salon-reservation-cancel,
+.salon-reservation-edit-cancel { border-color: rgba(255, 255, 255, .12); color: #c8c0b3; background: #252422; }
+.salon-reservation-reschedule svg,
+.salon-reservation-cancel svg { font-size: 16px; }
+.salon-reservation-buttons button:disabled { opacity: .55; cursor: wait; }
+.salon-reservation-edit {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(120px, .7fr) auto;
+  align-items: end;
+  gap: 12px;
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid rgba(212, 175, 55, .16);
+  border-radius: 9px;
+  background: #171615;
+}
+.salon-reservation-edit label { display: grid; gap: 6px; color: #c9bfaa; font-size: 11px; }
+.salon-reservation-edit input { width: 100%; min-height: 37px; box-sizing: border-box; padding: 0 9px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 6px; color: #eee8dc; background: #242321; font: inherit; color-scheme: dark; }
+.salon-reservation-edit-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+.salon-reservation-save { color: #211a07; background: #e6c450; }
+.salon-reservation-edit-cancel { white-space: nowrap; }
+.salon-reservations-state.success { color: #e8d17a; }
+.salon-reservation-attachments { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; padding-top:11px; border-top:1px solid rgba(255,255,255,.06); }
+.salon-reservation-attachments b { width:100%; color:#cfc39b; font-size:11px; }
+.salon-reservation-attachments a { max-width:100%; overflow:hidden; padding:7px 10px; border:1px solid rgba(232,200,76,.2); border-radius:6px; color:#e8c84c; background:#171615; font-size:11px; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width: 700px) {
+  .salon-reservations-panel { padding: 15px; }
+  .salon-reservations-heading h2 { font-size: 22px; }
+  .salon-reservations-heading > b { font-size: 10px; }
+  .salon-reservation-receipt { padding: 15px; }
+  .salon-reservation-receipt-heading h3 { font-size: 18px; }
+  .salon-reservation-receipt dl > div { grid-template-columns: 1fr; gap: 4px; }
+  .salon-reservation-actions { align-items: flex-start; flex-direction: column; gap: 9px; }
+  .salon-reservation-buttons { justify-content: flex-start; }
+  .salon-reservation-edit { grid-template-columns: 1fr 1fr; }
+  .salon-reservation-edit-actions { grid-column: 1 / -1; }
+}

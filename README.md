@@ -12,6 +12,8 @@ The homepage and collection page use the backend GraphQL `getProducts` query whe
 
 The frontend runs on port `1017`; its GraphQL API and uploaded media default to the backend at `http://localhost:9702`. Override `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_API_BASE_URL` in the deployment environment when the backend is hosted at another address.
 
+Product and order prices are shown and entered in USD. The backend still stores numeric prices in UZS, so seller-entered USD amounts are converted using the latest USD rate from the Central Bank of Uzbekistan JSON feed; the app uses a documented fallback rate if that feed is unavailable.
+
 Google and Facebook buttons on `/sign-in` redirect to `NEXT_PUBLIC_GOOGLE_OAUTH_URL` and `NEXT_PUBLIC_FACEBOOK_OAUTH_URL` when configured. The current NestJS backend does not expose provider OAuth endpoints, so these URLs must point to OAuth routes added to the authentication service before social sign-in can complete.
 
 ## Structure

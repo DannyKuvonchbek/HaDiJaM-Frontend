@@ -12,10 +12,9 @@ export const categories: {
       "/images/stitch/catalog/hadijam-katalog-marketplace-desktop-exquisite-solitaire-brilliant-cut-diamond-ring-in-18k-warm-yellow-gold-s-054.jpg",
   },
   {
-    label: "Necklaces",
-    value: "necklace",
-    image:
-      "/images/stitch/catalog/hadijam-katalog-marketplace-desktop-cascading-diamond-and-18k-yellow-gold-necklace-pendant-displayed-on-dark-055.jpg",
+    label: "Earrings",
+    value: "earring",
+    image: "/images/products/earrings/unsplash-gold-earrings-02.jpg",
   },
   {
     label: "Bracelets",
@@ -34,12 +33,6 @@ export const categories: {
     value: "brooch",
     image:
       "/images/stitch/catalog/katalog-5-kategoriya-opulent-gold-jewelry-still-life-of-a-handcrafted-broad-18k-filigree-gold-117.jpg",
-  },
-  {
-    label: "Earrings",
-    value: "earring",
-    image:
-      "/images/stitch/catalog/hadijam-katalog-marketplace-desktop-cascading-diamond-and-18k-yellow-gold-necklace-pendant-displayed-on-dark-055.jpg",
   },
   {
     label: "Watches",
@@ -95,10 +88,3 @@ export const featuredProducts: Product[] = [
     seller: "HaDiJaM Maison",
   },
 ];
-
-export const formatPrice = (value: number) => {
-  const amount = Math.round(value).toString();
-  const grouped = amount.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-
-  return `${grouped} UZS`;
-};

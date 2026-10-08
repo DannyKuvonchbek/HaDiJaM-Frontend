@@ -1,0 +1,130 @@
+@use "./repair-restoration/repairBooking";
+@use "./ultrasonic-cleaning/ultrasonicBooking";
+
+.atelier-booking { --atelier-gold: #e8c84c; --atelier-line: rgba(212,175,55,.18); width: min(1390px, calc(100% - 72px)); margin: 0 auto; padding: 92px 0 80px; color: #eee9df; }
+.atelier-booking-topline { display:flex; align-items:center; gap:10px; margin-bottom:20px; color:#bdb5a7; font-size:12px; }
+.atelier-booking-topline a { color:#e1c34c; text-decoration:none; }
+.atelier-booking-topline b { margin-left:auto; color:#e2c44d; font-size:10px; letter-spacing:.12em; }
+.atelier-booking-hero { display:grid; grid-template-columns:minmax(0,1.12fr) minmax(380px,.88fr); gap:24px; align-items:stretch; }
+.atelier-booking-hero-copy,.atelier-booking-hero-image,.atelier-booking-panel,.atelier-booking-summary,.atelier-standard { border:1px solid var(--atelier-line); border-radius:14px; background:#1a1918; }
+.atelier-booking-hero-copy { display:flex; flex-direction:column; justify-content:center; padding:38px 42px; background:radial-gradient(ellipse at 0 0,rgba(212,175,55,.08),transparent 45%),#191817; }
+.atelier-booking-eyebrow { display:block; color:#e7c54a; font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+.atelier-booking-hero h1 { max-width:790px; margin:18px 0 13px; font:500 clamp(36px,3.25vw,52px)/1.1 var(--font-playfair),Georgia,serif; }
+.atelier-booking-hero h1 em { color:#e9c349; }
+.atelier-booking-hero-copy>p { max-width:760px; margin:0; color:#c0b8a9; font-size:15px; line-height:1.75; }
+.atelier-booking-specs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:26px; }
+.atelier-booking-specs>div { display:grid; gap:6px; min-height:67px; align-content:center; padding:10px 13px; border:1px solid rgba(255,255,255,.06); border-radius:8px; background:#242321; }
+.atelier-booking-specs small { color:#a79f90; font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
+.atelier-booking-specs b { color:#f1d56b; font-size:15px; }
+.atelier-booking-hero-image { position:relative; min-height:300px; overflow:hidden; }
+.atelier-booking-hero-image img { display:block; width:100%; height:100%; min-height:300px; object-fit:cover; filter:brightness(.78); }
+.atelier-booking-hero-image>span { position:absolute; left:15px; top:15px; padding:8px 11px; border:1px solid rgba(255,255,255,.12); border-radius:99px; color:#eee9df; background:rgba(13,13,12,.8); font-size:10px; letter-spacing:.07em; }
+.atelier-repair-features { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:20px 0; }
+.atelier-repair-features article { padding:19px; border:1px solid rgba(255,255,255,.05); border-radius:12px; background:#1c1b1a; }
+.atelier-repair-features article>b { color:var(--atelier-gold); font-size:22px; }
+.atelier-repair-features h3 { margin:8px 0 5px; font:500 19px/1.3 var(--font-playfair),Georgia,serif; }
+.atelier-repair-features p { margin:0; color:#b9b2a7; font-size:12px; line-height:1.6; }
+.atelier-booking-form { display:grid; grid-template-columns:minmax(0,1.72fr) minmax(310px,.72fr); gap:18px; align-items:start; margin-top:20px; }
+.atelier-booking-main { display:grid; gap:16px; }
+.atelier-booking-panel { padding:23px 25px; }
+.atelier-panel-heading { display:flex; gap:12px; align-items:center; margin-bottom:18px; }
+.atelier-panel-heading>span { display:grid; width:31px; height:31px; flex:0 0 31px; place-items:center; border-radius:50%; color:#261f0d; background:var(--atelier-gold); font-size:13px; font-weight:700; }
+.atelier-panel-heading h2 { margin:0; font:500 25px/1.2 var(--font-playfair),Georgia,serif; }
+.atelier-panel-heading p { margin:5px 0 0; color:#a9a295; font-size:11px; }
+.atelier-item-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.atelier-item-grid label { position:relative; display:flex; align-items:flex-start; gap:12px; min-height:78px; padding:15px; border:1px solid rgba(255,255,255,.07); border-radius:9px; background:#22211f; cursor:pointer; }
+.atelier-item-grid label.selected { border-color:rgba(232,200,76,.65); background:rgba(212,175,55,.08); }
+.atelier-item-grid input { position:absolute; top:15px; right:15px; width:17px; height:17px; accent-color:#e8c84c; }
+.atelier-item-grid label>b { color:var(--atelier-gold); font-size:20px; }
+.atelier-item-grid label>span { display:grid; gap:5px; padding-right:14px; font:500 17px var(--font-playfair),Georgia,serif; }
+.atelier-item-grid small { color:#aaa396; font:11px/1.5 var(--font-jakarta),Arial,sans-serif; }
+.atelier-technician-grid { display:grid; gap:10px; }
+.atelier-technician { display:grid; grid-template-columns:50px minmax(0,1fr) 26px; gap:13px; align-items:center; width:100%; padding:13px 15px; text-align:left; color:inherit; border:1px solid rgba(255,255,255,.07); border-radius:10px; background:#22211f; cursor:pointer; transition:border-color .18s,background .18s; }
+.atelier-technician:hover,.atelier-technician.selected { border-color:rgba(232,200,76,.58); background:linear-gradient(100deg,rgba(212,175,55,.1),#22211f 60%); }
+.atelier-technician-avatar { display:grid; width:47px; height:47px; place-items:center; border:1px solid rgba(232,200,76,.3); border-radius:50%; color:#f2d979; background:radial-gradient(circle at 35% 25%,#55503f,#24221c 72%); font:600 15px var(--font-playfair),Georgia,serif; }
+.atelier-technician-avatar { position:relative; overflow:hidden; }
+.atelier-technician-avatar img { width:100%; height:100%; object-fit:cover; }
+.atelier-technician-avatar span { position:absolute; inset:0; display:grid; place-items:center; color:#f2d979; background:rgba(16,15,13,.42); }
+.atelier-technician small { color:#ebca51; font-size:10px; }
+.atelier-technician h3 { margin:3px 0; font:500 19px var(--font-playfair),Georgia,serif; }
+.atelier-technician p { margin:0 0 5px; color:#bcb4a5; font-size:12px; }
+.atelier-technician div:nth-child(2)>div { display:flex; gap:16px; color:#d6cfc1; font-size:10px; }
+.atelier-technician div:nth-child(2)>div span { color:#e3c448; }
+.atelier-technician>i { display:grid; width:22px; height:22px; place-items:center; border:1px solid rgba(255,255,255,.17); border-radius:50%; color:#222; background:transparent; font-style:normal; }
+.atelier-technician.selected>i { border-color:var(--atelier-gold); background:var(--atelier-gold); }
+.atelier-date-strip { display:grid; grid-template-columns:repeat(7,minmax(50px,1fr)); gap:7px; overflow-x:auto; padding-bottom:3px; }
+.atelier-date-strip button { display:grid; min-height:75px; align-content:center; gap:3px; border:1px solid rgba(255,255,255,.06); border-radius:8px; color:#c8c0b1; background:#242321; cursor:pointer; }
+.atelier-date-strip button.selected { border-color:#ebca51; color:#241d08; background:#ebca51; }
+.atelier-date-strip small,.atelier-date-strip span { font-size:10px; }
+.atelier-date-strip b { font-size:19px; }
+.atelier-selected-date { display:flex; justify-content:space-between; gap:10px; margin:17px 0 10px; color:#eee8db; font-size:14px; }
+.atelier-selected-date span { color:#c1b89f; font-size:11px; }
+.atelier-availability-retry { margin:0 0 10px; padding:0; border:0; color:#e8c84c; background:transparent; font:600 11px var(--font-jakarta),Arial,sans-serif; cursor:pointer; }
+.atelier-time-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+.atelier-time-grid button { display:grid; gap:5px; min-height:58px; align-content:center; border:1px solid rgba(255,255,255,.06); border-radius:8px; color:#e8e0d1; background:#252422; font-size:14px; cursor:pointer; }
+.atelier-time-grid button.selected { border-color:#ebca51; color:#201a09; background:#ebca51; }
+.atelier-time-grid button:disabled { color:#79756c; background:#171615; text-decoration:line-through; cursor:not-allowed; opacity:.65; }
+.atelier-time-grid button small { font-size:10px; opacity:.75; }
+.atelier-contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+.atelier-contact-grid label { display:grid; gap:7px; color:#d1c8b5; font-size:11px; letter-spacing:.03em; }
+.atelier-contact-grid label.wide { grid-column:1/-1; }
+.atelier-contact-grid input,.atelier-contact-grid textarea { width:100%; min-height:44px; padding:11px 13px; border:1px solid rgba(255,255,255,.1); border-radius:7px; outline:0; color:#f2ede3; background:#111; font:13px var(--font-jakarta),Arial,sans-serif; }
+.atelier-contact-grid textarea { min-height:98px; resize:vertical; }
+.atelier-contact-grid input:focus,.atelier-contact-grid textarea:focus { border-color:#d4af37; box-shadow:0 0 0 2px rgba(212,175,55,.13); }
+.atelier-photo-upload input { padding:8px!important; }
+.atelier-contact-grid label small { color:#aaa193; font-size:10px; }
+.atelier-booking-summary { position:sticky; top:100px; padding:24px; }
+.atelier-booking-summary h2 { margin:7px 0 18px; font:500 26px/1.2 var(--font-playfair),Georgia,serif; }
+.atelier-booking-summary dl { display:grid; gap:0; margin:0; }
+.atelier-booking-summary dl>div { display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-top:1px solid rgba(255,255,255,.07); }
+.atelier-booking-summary dt { color:#aaa294; font-size:12px; }
+.atelier-booking-summary dd { max-width:60%; margin:0; color:#eee6d8; font-size:12px; text-align:right; }
+.atelier-total { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:14px 0; padding-top:18px; border-top:1px solid rgba(232,200,76,.3); }
+.atelier-total span { display:grid; gap:4px; font:500 17px var(--font-playfair),Georgia,serif; }
+.atelier-total small { color:#a9a191; font:10px var(--font-jakarta),Arial,sans-serif; }
+.atelier-total strong { color:#efcf57; font:600 32px var(--font-jakarta),Arial,sans-serif; }
+.atelier-payment-note { color:#b2aa9d; font-size:11px; line-height:1.5; }
+.atelier-submit { display:flex; width:100%; min-height:48px; align-items:center; justify-content:center; padding:12px 16px; border:0; border-radius:999px; color:#201a08; background:linear-gradient(105deg,#f1d05d,#d4af37); font:700 13px var(--font-jakarta),Arial,sans-serif; cursor:pointer; transition:filter .2s,transform .2s; }
+.atelier-submit:hover:not(:disabled) { filter:brightness(1.07); transform:translateY(-1px); }
+.atelier-submit:disabled { opacity:.62; cursor:wait; }
+.atelier-booking-error { padding:10px 12px; border:1px solid rgba(245,120,100,.35); border-radius:7px; color:#ffb5a9; background:rgba(120,25,16,.15); font-size:12px; line-height:1.45; }
+.atelier-summary-security { display:grid; gap:9px; margin-top:19px; padding-top:15px; border-top:1px solid rgba(255,255,255,.07); color:#d5c895; font-size:11px; }
+.atelier-standard { margin-top:22px; padding:27px; }
+.atelier-standard h2 { margin:7px 0 19px; font:500 30px var(--font-playfair),Georgia,serif; }
+.atelier-standard>div { display:grid; grid-template-columns:repeat(3,1fr); gap:13px; }
+.atelier-standard article { padding:17px; border-radius:9px; background:#232220; }
+.atelier-standard article small { color:#e5c44e; font-size:10px; text-transform:uppercase; }
+.atelier-standard article h3 { margin:9px 0; font:500 18px var(--font-playfair),Georgia,serif; }
+.atelier-standard article p { margin:0; color:#b9b1a3; font-size:12px; line-height:1.6; }
+.atelier-confirm-overlay { position:fixed; z-index:1200; inset:0; display:grid; place-items:center; padding:20px; background:rgba(0,0,0,.78); backdrop-filter:blur(9px); }
+.atelier-confirmation { position:relative; width:min(540px,100%); padding:33px; border:1px solid #e4bf37; border-radius:14px; color:#eee9df; background:#1c1b1a; box-shadow:0 0 38px rgba(212,175,55,.16),0 24px 70px rgba(0,0,0,.65); text-align:center; }
+.atelier-confirm-close { position:absolute; top:13px; right:14px; width:34px; height:34px; border:1px solid rgba(255,255,255,.13); border-radius:50%; color:#f2eddf; background:#292825; font-size:22px; cursor:pointer; }
+.atelier-confirm-icon { display:grid; width:54px; height:54px; place-items:center; margin:0 auto 16px; border:1px solid #e4bf37; border-radius:50%; color:#e8c84c; font-size:25px; }
+.atelier-confirmation>small { color:#e7c54a; font-size:9px; letter-spacing:.12em; }
+.atelier-confirmation h2 { margin:9px 0 20px; font:500 29px var(--font-playfair),Georgia,serif; }
+.atelier-confirmation dl { margin:0 0 17px; padding:0 15px; border:1px solid rgba(232,200,76,.2); border-radius:9px; text-align:left; }
+.atelier-confirmation dl>div { display:flex; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.06); font-size:12px; }
+.atelier-confirmation dl>div:last-child { border:0; }
+.atelier-confirmation dt { color:#afa794; }
+.atelier-confirmation dd { margin:0; color:#f1d45d; text-align:right; }
+.atelier-confirmation>p { color:#bdb5a6; font-size:12px; line-height:1.6; }
+.atelier-confirm-return { margin-top:10px; padding:9px 15px; border:0; color:#c8c0b2; background:none; cursor:pointer; }
+.service-bookings-panel { padding:22px; border:1px solid rgba(212,175,55,.14); border-radius:14px; background:#191817; }
+.service-bookings-heading,.service-booking-receipt-heading { display:flex; align-items:center; justify-content:space-between; gap:15px; }
+.service-bookings-heading>div>span,.service-booking-receipt-heading>div>span { color:#d9b83e; font-size:9px; letter-spacing:.13em; }
+.service-bookings-heading h2,.service-booking-receipt-heading h3 { margin:5px 0 0; font:500 24px var(--font-playfair),Georgia,serif; }
+.service-bookings-heading>b { color:#d9c576; font-size:12px; }
+.service-bookings-state { padding:18px; color:#bdb5a7; }
+.service-bookings-state.error { color:#ffb5a9; }
+.service-bookings-list { display:grid; gap:13px; margin-top:16px; }
+.service-booking-receipt { padding:18px; border:1px solid rgba(212,175,55,.14); border-radius:11px; background:#211f1d; }
+.service-booking-receipt-heading h3 { font-size:20px; }
+.service-booking-status { padding:6px 10px; border-radius:99px; color:#e9ce61; background:rgba(212,175,55,.12); font-size:10px; }
+.service-booking-receipt dl { display:grid; gap:0; margin:14px 0 0; }
+.service-booking-receipt dl>div { display:flex; justify-content:space-between; gap:18px; padding:9px 0; border-top:1px solid rgba(255,255,255,.06); font-size:12px; }
+.service-booking-receipt dt { color:#aaa294; }
+.service-booking-receipt dd { margin:0; color:#ede6d9; text-align:right; }
+.service-booking-receipt>p { margin:13px 0 0; color:#aaa294; font-size:10px; }
+.service-booking-photo { display:inline-block; margin-top:13px; color:#e7c54a; font-size:12px; }
+@media(max-width:1000px) { .atelier-booking { width:calc(100% - 42px); } .atelier-booking-form { grid-template-columns:minmax(0,1.45fr) minmax(275px,.8fr); } .atelier-booking-hero { grid-template-columns:1.05fr .95fr; } .atelier-booking-hero-copy { padding:28px; } .atelier-technician-grid { gap:8px; } }
+@media(max-width:760px) { .atelier-booking { width:calc(100% - 30px); padding:86px 0 48px; } .atelier-booking-topline { flex-wrap:wrap; font-size:10px; } .atelier-booking-topline b { width:100%; margin-left:0; } .atelier-booking-hero,.atelier-booking-form { grid-template-columns:1fr; } .atelier-booking-hero-copy { padding:23px 20px; } .atelier-booking-hero h1 { margin:13px 0 10px; font-size:34px; } .atelier-booking-hero-copy>p { font-size:13px; } .atelier-booking-specs { grid-template-columns:1fr 1fr; gap:7px; margin-top:18px; } .atelier-booking-specs>div { min-height:60px; } .atelier-booking-hero-image,.atelier-booking-hero-image img { min-height:240px; max-height:290px; } .atelier-repair-features { grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; } .atelier-repair-features article { padding:13px; } .atelier-repair-features h3 { font-size:16px; } .atelier-repair-features p { font-size:11px; } .atelier-booking-form { margin-top:12px; } .atelier-booking-panel,.atelier-booking-summary,.atelier-standard { padding:17px; } .atelier-panel-heading h2 { font-size:20px; } .atelier-panel-heading p { font-size:10px; } .atelier-item-grid { grid-template-columns:1fr 1fr; gap:7px; } .atelier-item-grid label { min-height:70px; padding:11px; } .atelier-item-grid label>span { font-size:15px; } .atelier-technician { grid-template-columns:42px minmax(0,1fr) 22px; gap:9px; padding:11px; } .atelier-technician-avatar { width:40px; height:40px; font-size:13px; } .atelier-technician h3 { font-size:16px; } .atelier-technician p { font-size:11px; } .atelier-technician div:nth-child(2)>div { flex-wrap:wrap; gap:4px 9px; font-size:9px; } .atelier-date-strip { grid-template-columns:repeat(7,60px); } .atelier-date-strip button { min-height:66px; } .atelier-selected-date { flex-direction:column; gap:5px; font-size:12px; } .atelier-time-grid { grid-template-columns:repeat(2,1fr); gap:7px; } .atelier-time-grid button { min-height:52px; } .atelier-contact-grid { grid-template-columns:1fr; gap:11px; } .atelier-contact-grid label.wide { grid-column:auto; } .atelier-booking-summary { position:static; } .atelier-standard { margin-top:14px; } .atelier-standard h2 { font-size:25px; } .atelier-standard>div { grid-template-columns:1fr; } .atelier-confirmation { padding:27px 18px 19px; } .atelier-confirmation h2 { font-size:25px; } .atelier-confirmation dl { padding:0 10px; } .atelier-confirmation dl>div { font-size:11px; } }

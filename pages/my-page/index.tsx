@@ -8,6 +8,8 @@ import AccountProfilePanel from '@/libs/components/account/AccountProfilePanel';
 import AccountOrdersPanel from '@/libs/components/account/AccountOrdersPanel';
 import AccountSavedPanel from '@/libs/components/account/AccountSavedPanel';
 import AccountOrderModal from '@/libs/components/account/AccountOrderModal';
+import SalonReservationsPanel from '@/libs/components/account/SalonReservationsPanel';
+import ServiceBookingsPanel from '@/libs/components/account/ServiceBookingsPanel';
 import { addToCart } from '@/libs/cart';
 import { GET_MY_FAVORITES, GET_MEMBER_PROFILE, GET_MY_ORDERS, UPDATE_MEMBER_PROFILE } from '@/libs/graphql/myPage';
 import { LIKE_PRODUCT } from '@/libs/graphql/products';
@@ -41,12 +43,20 @@ export default function MyPage() {
 	const initials = useMemo(() => (profile?.memberFullName || profile?.memberNick || 'H').split(/\s+/).slice(0, 2).map((name) => name[0]).join('').toUpperCase(), [profile]);
 
 	useEffect(() => {
+		if (!router.isReady) return;
 		const token = localStorage.getItem('accessToken');
-		if (!token) { void router.replace('/sign-in?mode=signin&next=%2Fmy-page'); return; }
+		if (!token) { const requestedTab = router.query.tab; const next = requestedTab === 'saved' || requestedTab === 'salon' || requestedTab === 'services' ? `%2Fmy-page%3Ftab%3D${requestedTab}` : '%2Fmy-page'; void router.replace(`/sign-in?mode=signin&next=${next}`); return; }
 		const id = readMemberId(token);
 		if (!id) { setError('We could not read your account session. Please sign in again.'); return; }
 		setMemberId(id);
-	}, [router]);
+	}, [router.isReady, router.query.tab, router]);
+
+	useEffect(() => {
+		if (!router.isReady || typeof router.query.tab !== 'string') return;
+		if (router.query.tab === 'saved' || router.query.tab === 'orders' || router.query.tab === 'profile' || router.query.tab === 'salon' || router.query.tab === 'services') {
+			setTab(router.query.tab);
+		}
+	}, [router.isReady, router.query.tab]);
 
 	useEffect(() => {
 		if (!member) return;
@@ -108,5 +118,5 @@ export default function MyPage() {
 	const switchTab = (next: AccountTab) => { setTab(next); setError(''); setMessage(''); };
 	const accountStatus = profile?.memberStatus === 'ACTIVE' ? 'Vault active' : formatAccountStatus(profile?.memberStatus ?? '');
 
-	return <SiteLayout title="My Account | HaDiJaM"><section className="account-portal section-shell"><div className="account-portal-heading"><div><span className="eyebrow"><i /> MONOGRAM SUITE · ENCRYPTED CONNECTION</span><h1>Private Residence &amp; Account Portal</h1></div>{profile && <span className="client-id">CLIENT ID · #{profile._id.slice(-8).toUpperCase()}</span>}</div><div className="account-portal-grid"><AccountSidebar profile={profile} initials={initials} loading={memberLoading} uploading={avatarUploading} status={accountStatus} onAvatarUpload={handleAvatarUpload} /><div className="account-details-column"><AccountTabs active={tab} orders={totalOrders} saved={totalFavorites} onChange={switchTab} />{tab === 'profile' && <AccountProfilePanel loading={memberLoading && !profile} loadError={memberError?.message} saving={saving} error={error} message={message} fullName={fullName} nickname={nickname} phone={phone} address={address} description={description} onFullName={setFullName} onNickname={setNickname} onPhone={setPhone} onAddress={setAddress} onDescription={setDescription} onSubmit={handleProfileSave} />}{tab === 'orders' && <><AccountOrdersPanel orders={orders} loading={ordersLoading} error={ordersError?.message} onDetails={setSelectedOrder} />{error && <p className="account-feedback error" role="alert">{error}</p>}{message && <p className="account-feedback success" role="status">{message}</p>}</>}{tab === 'saved' && <><AccountSavedPanel items={favorites} loading={favoritesLoading} error={favoritesError?.message} onRemove={removeFavorite} onAddToBag={addSavedProductToBag} />{error && <p className="account-feedback error" role="alert">{error}</p>}{message && <p className="account-feedback success" role="status">{message}</p>}</>}</div></div>{selectedOrder && <AccountOrderModal order={selectedOrder} phone={profile?.memberPhone} onClose={() => setSelectedOrder(null)} />}</section></SiteLayout>;
+	return <SiteLayout title="My Account | HaDiJaM"><section className="account-portal section-shell"><div className="account-portal-heading"><div><span className="eyebrow"><i /> MONOGRAM SUITE · ENCRYPTED CONNECTION</span><h1>Private Residence &amp; Account Portal</h1></div>{profile && <span className="client-id">CLIENT ID · #{profile._id.slice(-8).toUpperCase()}</span>}</div><div className="account-portal-grid"><AccountSidebar profile={profile} initials={initials} loading={memberLoading} uploading={avatarUploading} status={accountStatus} onAvatarUpload={handleAvatarUpload} /><div className="account-details-column"><AccountTabs active={tab} orders={totalOrders} saved={totalFavorites} onChange={switchTab} />{tab === 'profile' && <AccountProfilePanel loading={memberLoading && !profile} loadError={memberError?.message} saving={saving} error={error} message={message} fullName={fullName} nickname={nickname} phone={phone} address={address} description={description} onFullName={setFullName} onNickname={setNickname} onPhone={setPhone} onAddress={setAddress} onDescription={setDescription} onSubmit={handleProfileSave} />}{tab === 'orders' && <><AccountOrdersPanel orders={orders} loading={ordersLoading} error={ordersError?.message} onDetails={setSelectedOrder} />{error && <p className="account-feedback error" role="alert">{error}</p>}{message && <p className="account-feedback success" role="status">{message}</p>}</>}{tab === 'services' && memberId && <ServiceBookingsPanel />}{tab === 'saved' && <><AccountSavedPanel items={favorites} loading={favoritesLoading} error={favoritesError?.message} onRemove={removeFavorite} onAddToBag={addSavedProductToBag} />{error && <p className="account-feedback error" role="alert">{error}</p>}{message && <p className="account-feedback success" role="status">{message}</p>}</>}{tab === 'salon' && memberId && <SalonReservationsPanel />}</div></div>{selectedOrder && <AccountOrderModal order={selectedOrder} phone={profile?.memberPhone} onClose={() => setSelectedOrder(null)} />}</section></SiteLayout>;
 }

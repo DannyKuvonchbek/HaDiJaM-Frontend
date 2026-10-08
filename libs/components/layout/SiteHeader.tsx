@@ -16,8 +16,8 @@ import { accountApiBase, readMemberId } from '@/libs/utils/account';
 
 const links = [
 	['Collections', '/catalog'],
-	['Atelier services', '/services'],
-	['Our maison', '/about'],
+	['Services', '/services'],
+	['About Us', '/about'],
 	['Contact', '/contact'],
 ] as const;
 
@@ -97,7 +97,7 @@ export default function SiteHeader() {
 						<MenuItem onClick={() => setLanguage(null)}>Русский</MenuItem>
 					</Menu>
 					<IconButton aria-label="Search"><SearchRoundedIcon /></IconButton>
-					<IconButton aria-label="Saved pieces"><Badge badgeContent={0} color="primary"><FavoriteBorderRoundedIcon /></Badge></IconButton>
+					<IconButton component={Link} href="/my-page?tab=saved" aria-label="Saved pieces"><Badge badgeContent={0} color="primary"><FavoriteBorderRoundedIcon /></Badge></IconButton>
 					<IconButton aria-label="Shopping bag" component={Link} href="/cart"><Badge badgeContent={cartCount} color="primary"><ShoppingBagOutlinedIcon /></Badge></IconButton>
 					{isAuthenticated ? <>
 						<IconButton className="account-link account-link-authenticated" aria-label="My account menu" title="Signed in" onClick={(event) => setAccountMenu(event.currentTarget)}>

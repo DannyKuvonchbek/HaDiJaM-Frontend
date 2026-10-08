@@ -30,9 +30,14 @@ export default function OrderConfirmationPage() {
             <b>03</b> Secure, insured delivery
           </span>
         </div>
-        <Link href="/catalog" className="button button-gold">
-          Return to the collection <span>↗</span>
-        </Link>
+        <div className="confirmation-actions">
+          <Link href="/my-page" className="button button-gold">
+            View My Orders <span>↗</span>
+          </Link>
+          <Link href="/catalog" className="text-link">
+            Return to the collection
+          </Link>
+        </div>
       </section>
     </SiteLayout>
   );

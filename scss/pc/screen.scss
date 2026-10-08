@@ -1,0 +1,15 @@
+/* Minimum canvas for desktop layouts, following Nestar's 1300px PC container. */
+@media (min-width: 761px) {
+  body,
+  #__next {
+    min-width: 1300px;
+  }
+}
+
+@media (max-width: 760px) {
+  body,
+  #__next {
+    min-width: 0;
+    width: 100%;
+  }
+}

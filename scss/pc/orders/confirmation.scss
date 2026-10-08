@@ -49,3 +49,5 @@
   margin-right: 6px;
   color: var(--gold);
 }
+.confirmation-actions { display: flex; align-items: center; justify-content: center; gap: 22px; }
+.confirmation-actions .text-link { color: #d0bd69; font-size: 13px; }

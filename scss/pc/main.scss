@@ -4,6 +4,10 @@
 @use "./catalog/catalog";
 @use "./product/detail";
 @use "./services/services";
+@use "./services/salonBooking";
+@use "./services/atelierBooking";
+@use "./services/workflows";
+@use "./account/salonReservations";
 @use "./cart/cart";
 @use "./account/account";
 @use "./account/mypage";
@@ -11,4 +15,4 @@
 @use "./orders/confirmation";
 @use "./seller/add-product";
 @use "./contact/contact";
-@use "./typography";
+@use "./checkout/checkout";

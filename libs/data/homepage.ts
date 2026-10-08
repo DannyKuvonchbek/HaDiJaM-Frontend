@@ -2,14 +2,14 @@ import type { ProductCategory } from '@/libs/types/product';
 
 export const homeCategories: { label: string; detail: string; image: string; value: ProductCategory }[] = [
 	{ label: 'Rings', detail: 'Solitaire & Bands', image: '/images/stitch/home/hadijam-bosh-sahifa-desktop-homepage-diamond-and-gold-rings-016.jpg', value: 'ring' },
-	{ label: 'Necklaces', detail: 'Pendants & Sautoirs', image: '/images/stitch/home/hadijam-bosh-sahifa-desktop-homepage-gold-necklaces-and-pendants-017.jpg', value: 'necklace' },
+	{ label: 'Earrings', detail: 'Hoops, Studs & Drops', image: '/images/products/earrings/unsplash-gold-earrings-02.jpg', value: 'earring' },
 	{ label: 'Bracelets', detail: 'Cuffs & Tennis Lines', image: '/images/stitch/home/hadijam-bosh-sahifa-desktop-homepage-bangles-and-bracelets-018.jpg', value: 'bracelet' },
 	{ label: 'Chains', detail: 'Cuban & Figaro Links', image: '/images/stitch/home/hadijam-bosh-sahifa-desktop-homepage-pure-gold-chains-019.jpg', value: 'chain' },
 	{ label: 'Timepieces', detail: 'Rare Chronometers', image: '/images/stitch/home/hadijam-bosh-sahifa-desktop-homepage-haute-horlogerie-gold-watches-020.jpg', value: 'watch' },
 ];
 
 export const homeProductFilters: { label: string; value: 'all' | ProductCategory }[] = [
-	{ label: 'All', value: 'all' }, { label: 'Rings', value: 'ring' }, { label: 'Necklaces', value: 'necklace' }, { label: 'Bracelets', value: 'bracelet' }, { label: 'Watches', value: 'watch' },
+	{ label: 'All', value: 'all' }, { label: 'Rings', value: 'ring' }, { label: 'Earrings', value: 'earring' }, { label: 'Bracelets', value: 'bracelet' }, { label: 'Watches', value: 'watch' },
 ];
 
 export const homeServices = [

@@ -21,6 +21,8 @@ import {
   GET_SELLER_PRODUCTS,
   uploadProductImages,
 } from "@/libs/graphql/sellerProducts";
+import { useUsdUzsRate } from "@/libs/utils/CurrencyProvider";
+import { formatPrice, usdToUzs } from "@/libs/utils/currency";
 
 type JewelryType =
   | "ring"
@@ -42,6 +44,7 @@ const categories: Array<{ value: JewelryType; label: string; icon: string }> = [
 ];
 
 export default function AddProductForm() {
+  const usdUzsRate = useUsdUzsRate();
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -74,6 +77,7 @@ export default function AddProductForm() {
     fetchPolicy: "network-only",
   });
   const sellerProducts = sellerProductsData?.getSellerProducts?.list ?? [];
+  const sellerProductsTotal = sellerProductsData?.getSellerProducts?.metaCounter?.[0]?.total ?? sellerProducts.length;
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -186,7 +190,7 @@ export default function AddProductForm() {
           input: {
             productType: category,
             productTitle: String(form.get("title") ?? "").trim(),
-            productPrice: Number(form.get("price")),
+            productPrice: usdToUzs(Number(form.get("price")), usdUzsRate),
             productImages: imagePaths,
             productDesc: details,
             productBarter: barter,
@@ -407,11 +411,13 @@ export default function AddProductForm() {
                     <span>Gold purity / karat</span>
                     <select
                       name="purity"
-                      defaultValue="18K Pure Gold (750 hallmark)"
+                      defaultValue="18K Yellow Gold (750 hallmark)"
                     >
                       <option>24K Investment Gold (999.9)</option>
                       <option>22K Gold (916)</option>
-                      <option>18K Pure Gold (750 hallmark)</option>
+                      <option>18K Yellow Gold (750 hallmark)</option>
+                      <option>18K White Gold (750 hallmark)</option>
+                      <option>18K Rose Gold (750 hallmark)</option>
                       <option>14K Gold (585)</option>
                       <option>Platinum (Pt 950)</option>
                       <option>Other / specify in description</option>
@@ -562,7 +568,7 @@ export default function AddProductForm() {
                   <PaymentsOutlinedIcon />
                   <div>
                     <h2>Payment &amp; Valuation</h2>
-                    <p>Product price in UZS</p>
+                    <p>Product price in USD</p>
                   </div>
                 </div>
                 <label className="seller-field">
@@ -570,17 +576,17 @@ export default function AddProductForm() {
                     Boutique listing price <b>*</b>
                   </span>
                   <div className="seller-price-input">
-                    <span>UZS</span>
+                    <span>USD</span>
                     <input
                       name="price"
                       type="number"
                       min="0"
-                      step="1000"
+                      step="1"
                       required
                       placeholder="0"
                     />
                   </div>
-                  <small>The listed amount is saved in Uzbek so‘m.</small>
+                  <small>Enter the USD price. The backend receives its current UZS equivalent.</small>
                 </label>
                 <div className="seller-payment-note">
                   <VerifiedOutlinedIcon />
@@ -685,7 +691,7 @@ export default function AddProductForm() {
                 <h2 id="seller-inventory-title">Your live inventory</h2>
                 <p>Products loaded directly from your seller account.</p>
               </div>
-              <code>{sellerProducts.length} products</code>
+              <code>{sellerProductsTotal} products</code>
             </div>
             {sellerProductsLoading ? (
               <p role="status">Loading your products…</p>
@@ -711,7 +717,7 @@ export default function AddProductForm() {
                         {product.productType} · {product.productStatus}
                       </span>
                       <strong>
-                        {Number(product.productPrice).toLocaleString()} UZS
+                        {formatPrice(product.productPrice, usdUzsRate)}
                       </strong>
                     </div>
                   </article>

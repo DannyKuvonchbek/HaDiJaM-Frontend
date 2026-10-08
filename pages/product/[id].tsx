@@ -1,16 +1,22 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
-import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import { useRouter } from "next/router";
 import SiteLayout from "@/libs/components/layout/SiteLayout";
 import ProductCard from "@/libs/components/catalog/ProductCard";
-import { featuredProducts, formatPrice } from "@/libs/data/catalog";
+import EntityLikeButton from "@/libs/components/catalog/EntityLikeButton";
+import { featuredProducts } from "@/libs/data/catalog";
+import { getProductImage } from "@/libs/data/productImages";
+import { getProductDisplayTitle } from "@/libs/data/productTitles";
+import { formatPrice } from "@/libs/utils/currency";
+import { useUsdUzsRate } from "@/libs/utils/CurrencyProvider";
 import { GET_PRODUCT } from "@/libs/graphql/products";
 import { addToCart } from "@/libs/cart";
+import type { ProductCategory } from "@/libs/types/product";
 
 export default function ProductPage() {
+  const usdUzsRate = useUsdUzsRate();
   const router = useRouter();
   const id = typeof router.query.id === "string" ? router.query.id : "";
   const product =
@@ -28,25 +34,28 @@ export default function ProductPage() {
         ? {
             ...product,
             id: remote._id,
-            title: remote.productTitle,
+            title: getProductDisplayTitle(remote.productType, remote.productTitle, 0),
             price: remote.productPrice,
             subtitle:
               remote.productDesc ??
               `${remote.productType} · verified by HaDiJaM`,
-            image: remote.productImages?.[0]
+            category: remote.productType as ProductCategory,
+            image: getProductImage(remote.productType, remote.productTitle, 0, remote.productImages?.[0]
               ? `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702"}/${remote.productImages[0]}`
-              : product.image,
+              : product.image),
           }
         : product,
     [remote, product],
   );
-  const images = [
-    shownProduct.image,
-    ...featuredProducts
+  useEffect(() => {
+    setActiveImage(shownProduct.image);
+  }, [shownProduct.image]);
+  const images = ["chain", "earring", "ring"].includes(shownProduct.category)
+    ? [shownProduct.image]
+    : [shownProduct.image, ...featuredProducts
       .filter((item) => item.id !== shownProduct.id)
       .slice(0, 3)
-      .map((item) => item.image),
-  ];
+      .map((item) => item.image)];
   const add = () => {
     addToCart({
       id: shownProduct.id,
@@ -69,7 +78,7 @@ export default function ProductPage() {
         </div>
         <div className="detail-grid">
           <div className="detail-gallery">
-            <div className="detail-main-image">
+            <div className={`detail-main-image${shownProduct.category === "chain" ? " chain-detail-image" : ""}${shownProduct.category === "ring" ? " ring-detail-image" : ""}`}>
               <img src={activeImage} alt={shownProduct.title} />
             </div>
             <div className="detail-thumbnails">
@@ -99,7 +108,7 @@ export default function ProductPage() {
               <small>Maison selection · independently verified</small>
             </div>
             <div className="detail-price">
-              {formatPrice(shownProduct.price)}
+              {formatPrice(shownProduct.price, usdUzsRate)}
               <small>Price includes insured salon handling</small>
             </div>
             <p className="detail-description">
@@ -112,9 +121,14 @@ export default function ProductPage() {
                 {added ? "Added to your bag" : "Add to your bag"}{" "}
                 <span>{added ? "✓" : "↗"}</span>
               </button>
-              <button className="detail-heart" aria-label="Save this piece">
-                <FavoriteBorderRoundedIcon />
-              </button>
+              <EntityLikeButton
+                entityType="product"
+                entityId={shownProduct.id}
+                initialLiked={Boolean(remote?.meLiked?.some((like: { myFavorite: boolean }) => like.myFavorite))}
+                initialCount={remote?.productLikes ?? 0}
+                label={shownProduct.title}
+                className="detail-heart"
+              />
             </div>
             <div className="detail-assurances">
               <div>
