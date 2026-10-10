@@ -1,3 +1,4 @@
+import { atelierBookingRules } from '@/libs/utils/serviceBookingRules';
 import { authValue } from "@/libs/auth";
 import Link from "next/link";
 import { useState } from "react";
@@ -7,7 +8,7 @@ import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import EntityLikeButton from "@/libs/components/catalog/EntityLikeButton";
 import SalonSuiteBooking from "@/libs/components/services/SalonSuiteBooking";
 import SiteLayout from "@/libs/components/layout/SiteLayout";
-import { GET_SERVICES, CREATE_SERVICE_BOOKING } from "@/libs/graphql/services";
+import { GET_SERVICES, CREATE_SERVICE_BOOKING, GET_UNAVAILABLE_SERVICE_BOOKING_SLOTS } from "@/libs/graphql/services";
 
 const services = [
   {
@@ -84,6 +85,14 @@ export default function ServicesPage() {
       },
     },
   });
+  const selectedService = data?.getServices?.list?.find((entry: any) => entry._id === bookingService);
+  const bookingRule = atelierBookingRules[selectedService?.serviceCategory];
+  const [modalBookingDate, setModalBookingDate] = useState('');
+  const modalAvailability = useQuery(GET_UNAVAILABLE_SERVICE_BOOKING_SLOTS, {
+    variables: {input: {serviceId: bookingService ?? '', date: modalBookingDate, technician: bookingRule?.technician ?? 'Atelier Concierge'}},
+    skip: !selectedService || !modalBookingDate || !authValue('accessToken'), fetchPolicy: 'network-only',
+  });
+  const unavailableTimes: string[] = modalAvailability.data?.getUnavailableServiceBookingSlots ?? [];
   const [createBooking, { loading }] = useMutation(CREATE_SERVICE_BOOKING);
   const handleBooking = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -102,15 +111,16 @@ export default function ServicesPage() {
       return;
     }
     const form = new FormData(event.currentTarget);
-    const date = new Date(String(form.get("bookingDate")));
+    const date = new Date(`${String(form.get("bookingDate"))}T12:00:00+09:00`);
     const time = new Date(
-      `${String(form.get("bookingDate"))}T${String(form.get("bookingTime"))}:00`,
+      `${String(form.get("bookingDate"))}T${String(form.get("bookingTime"))}:00+09:00`,
     );
     try {
       await createBooking({
         variables: {
           input: {
             serviceId: bookingService,
+            selectedTechnician: bookingRule?.technician ?? "Atelier Concierge",
             bookingDate: date.toISOString(),
             bookingTime: time.toISOString(),
             customerPhone: String(form.get("customerPhone")),
@@ -325,6 +335,14 @@ export default function ServicesPage() {
                         <Link href={`/services/ultrasonic-cleaning${live?._id ? `?serviceId=${live._id}` : ""}`} className="text-link">
                           Book {service.title} <ArrowForwardRoundedIcon />
                         </Link>
+                      ) : service.category === "ASSAY" ? (
+                        <button
+                          type="button"
+                          onClick={() => window.alert("Coming soon")}
+                          className="text-link"
+                        >
+                          Book {service.title} <ArrowForwardRoundedIcon />
+                        </button>
                       ) : (
                         <button
                           onClick={() => setBookingService(live?._id ?? "consultation")}
@@ -597,6 +615,8 @@ export default function ServicesPage() {
                     <input
                       type="date"
                       name="bookingDate"
+                      value={modalBookingDate}
+                      onChange={(event) => setModalBookingDate(event.target.value)}
                       required
                       min={new Date(Date.now() + 86400000)
                         .toISOString()
@@ -604,8 +624,8 @@ export default function ServicesPage() {
                     />
                   </label>
                   <label>
-                    Preferred time
-                    <input type="time" name="bookingTime" required />
+                    Preferred time (KST)
+                    {bookingRule ? <select name="bookingTime" required defaultValue=""><option value="" disabled>Choose an available time</option>{bookingRule.slots.map(time => <option key={time} value={time} disabled={unavailableTimes.includes(time)}>{time}{unavailableTimes.includes(time) ? ' · Unavailable' : ''}</option>)}</select> : <input type="time" name="bookingTime" required />}
                   </label>
                 </div>
                 <label>
@@ -627,7 +647,7 @@ export default function ServicesPage() {
                 <button
                   type="submit"
                   className="button button-gold"
-                  disabled={loading}
+                  disabled={loading || modalAvailability.loading}
                 >
                   {loading ? "Sending request…" : "Request a consultation"}{" "}
                   <span>↗</span>

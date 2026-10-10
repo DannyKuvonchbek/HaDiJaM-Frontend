@@ -3,7 +3,7 @@ import { initializeAuth, startActivityTracking } from './index';
 import { useRouter } from 'next/router';
 export default function AuthBootstrap({children}:{children:ReactNode}) {
   const router=useRouter();
-  const protectedPage=/^\/(my-page|admin|seller|checkout)(\/|$)/.test(router.pathname);
+  const protectedPage=/^\/(my-page|admin|seller|checkout)(\/|$)/.test(router.pathname) || /^\/services\/(repair-restoration|ultrasonic-cleaning)(\/|$)/.test(router.pathname);
   const [ready,setReady]=useState(false),[failed,setFailed]=useState(false),[identity,setIdentity]=useState(0);
   useEffect(()=>{
     let mounted=true;

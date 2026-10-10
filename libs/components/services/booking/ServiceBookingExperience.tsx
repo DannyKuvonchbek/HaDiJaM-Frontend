@@ -1,3 +1,4 @@
+import { atelierBookingRules } from '@/libs/utils/serviceBookingRules';
 import { authorizedFetch } from "@/libs/auth";
 import { authValue } from "@/libs/auth";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
@@ -104,8 +105,14 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
     const queryId = typeof router.query.serviceId === "string" ? router.query.serviceId : "";
     return list.find((item) => item._id === queryId && isActiveService(item) && matchesServiceKind(item, kind)) ?? list.find((item) => isActiveService(item) && matchesServiceKind(item, kind));
   }, [servicesQuery.data, router.query.serviceId, kind]);
-  const specialists = polish ? polishMasters : repairMasters;
-  const slots = polish ? polishSlots : repairSlots;
+  const atelierRule = service ? atelierBookingRules[service.serviceCategory] : undefined;
+  const originalSpecialists = polish ? polishMasters : repairMasters;
+  const specialists = atelierRule ? [{...originalSpecialists[0], name: atelierRule.technician, detail: 'Milano Heritage Restoration', years: 'Atelier specialist', rating: 'Verified atelier', location: 'Milano Atelier'}] : originalSpecialists;
+  const slots = atelierRule?.slots ?? (polish ? polishSlots : repairSlots);
+  useEffect(() => {
+    const allowed = atelierRule ? [atelierRule.technician] : (polish ? polishMasters : repairMasters).map(person => person.name);
+    if (!allowed.includes(technician)) {setTechnician(allowed[0]); setTime('');}
+  }, [atelierRule, polish, technician]);
   const dates = useMemo(() => Array.from({ length: 14 }, (_, index) => {
     const next = new Date(`${koreaDate(new Date())}T12:00:00+09:00`);
     next.setDate(next.getDate() + index);
@@ -121,7 +128,7 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
   });
   const unavailable: string[] = availability.data?.getUnavailableServiceBookingSlots ?? [];
   const unitPrice = Number(service?.servicePrice) > 0 ? Number(service?.servicePrice) : (polish ? 35 : 45);
-  const totalPrice = polish ? unitPrice * selectedItems.length : 45;
+  const totalPrice = polish ? unitPrice * selectedItems.length : atelierRule ? unitPrice : 45;
 
   const submitBooking = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -164,7 +171,7 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
         <span className="atelier-booking-eyebrow">✦ {polish ? "SERVICE 03 · EXPRESS RE-BRILLIANCE" : "ATELIER SERVICE 01 · MICRO-LASER RESTORATION"}</span>
         <h1>{polish ? <>Ultrasonic Cleaning &amp; <em>Rhodium Polish</em></> : <>Restoring Millimeter-Level Precision to Rare Family Heirlooms</>}</h1>
         <p>{polish ? "Restore mirror-bright brilliance with precision ultrasonic cleansing and a refined rhodium finish at our Gangnam atelier." : "Entrust your high-carat gold, platinum, and rare gem settings to master metallurgical restorers in our Gangnam clean-room atelier."}</p>
-        <div className="atelier-booking-specs">{(polish ? [["Fixed protocol", "$35 USD"], ["Turnaround", "1–2 hours"], ["Acoustic spec", "40kHz medical"], ["Plating layer", "0.8μm triple"]] : [["Initial deposit", "$45 USD"], ["Turnaround", "24–48 hours"], ["Laser spot", "0.05 mm"], ["Assay guarantee", "Lifetime"]]).map(([label, value]) => <div key={label}><small>{label}</small><b>{value}</b></div>)}</div>
+        <div className="atelier-booking-specs">{(polish ? [["Fixed protocol", "$35 USD"], ["Turnaround", "1–2 hours"], ["Acoustic spec", "40kHz medical"], ["Plating layer", "0.8μm triple"]] : [["Initial deposit", `$${atelierRule ? unitPrice : 45} USD`], ["Turnaround", "24–48 hours"], ["Laser spot", "0.05 mm"], ["Assay guarantee", "Lifetime"]]).map(([label, value]) => <div key={label}><small>{label}</small><b>{value}</b></div>)}</div>
       </div>
       <div className="atelier-booking-hero-image"><img src={polish ? "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-ultrasonic-gemstone-cleansing-tank-with-microscopic-mist-and-brilliant-p-090.jpg" : "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-close-up-precision-shot-of-laser-welding-repair-on-an-antique-intricate--088.jpg"} alt={title} /><span>● {polish ? "ULTRASONIC TANK 02 · ACTIVE" : "LIVE ARGON-CHAMBER STATUS: ONLINE"}</span></div>
     </section>
