@@ -165,7 +165,7 @@ export default function SalonReservationsPanel() {
       <div className="salon-reservation-list">
         {reservations.map((reservation) => {
           const manifest = parseManifest(reservation.itemManifest);
-          const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702";
+          const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002";
           return <article className="salon-reservation-receipt" key={reservation._id}>
             <div className="salon-reservation-receipt-heading">
               <div><span>DATABASE RECORD · VIP LEDGER</span><h3>{manifest?.workflow ?? "VIP Reservation"}</h3></div>

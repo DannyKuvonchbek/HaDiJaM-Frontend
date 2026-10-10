@@ -18,7 +18,7 @@ function createApolloClient() {
       }catch(error){observer.error(error);}
     };void run();return()=>{cancelled=true;subscription?.unsubscribe();};
   }));
-  return new ApolloClient({ssrMode:typeof window==='undefined',link:authLink.concat(new HttpLink({uri:process.env.NEXT_PUBLIC_API_URL??'http://localhost:9702/graphql',credentials:'include'})),cache:new InMemoryCache()});
+  return new ApolloClient({ssrMode:typeof window==='undefined',link:authLink.concat(new HttpLink({uri:process.env.NEXT_PUBLIC_API_URL??'http://localhost:2002/graphql',credentials:'include'})),cache:new InMemoryCache()});
 }
 export function initializeApollo(initialState?:NormalizedCacheObject){
   if(typeof window!=='undefined'&&!browserClient){browserClient=createApolloClient();window.addEventListener('hadijam:session-identity-changed',()=>{void browserClient?.clearStore();});}

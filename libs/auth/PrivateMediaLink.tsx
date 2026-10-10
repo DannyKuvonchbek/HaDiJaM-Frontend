@@ -8,7 +8,7 @@ export default function PrivateMediaLink({path,children,className}:{path:string;
     try {
       const relative=path.replace(/^https?:\/\/[^/]+\//,'').replace(/^\//,'');
       if(!/^uploads\/(atelier|service-bookings)\/[a-f0-9-]+\.(jpg|jpeg|png|webp|gif|heic|heif)$/.test(relative))throw new Error('Unsupported private attachment.');
-      const response=await authorizedFetch(`${(process.env.NEXT_PUBLIC_API_BASE_URL??'http://localhost:9702').replace(/\/$/,'')}/${relative.replace(/^uploads\//,'private-media/')}`,{cache:'no-store'});
+      const response=await authorizedFetch(`${(process.env.NEXT_PUBLIC_API_BASE_URL??'http://localhost:2002').replace(/\/$/,'')}/${relative.replace(/^uploads\//,'private-media/')}`,{cache:'no-store'});
       if(!response.ok)throw new Error('This attachment could not be opened.');
       const blob=await response.blob();if(!blob.type.startsWith('image/'))throw new Error('Unsupported attachment format.');
       if(url)URL.revokeObjectURL(url);setUrl(URL.createObjectURL(blob));

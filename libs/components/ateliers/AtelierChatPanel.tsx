@@ -7,7 +7,7 @@ import { GET_ATELIER_CHAT_HISTORY, GET_ATELIER_CONVERSATIONS } from "@/libs/grap
 import { uploadGraphqlFiles } from "@/libs/utils/uploadGraphqlFiles";
 import type { AtelierDefinition } from "@/libs/data/ateliers";
 
-const base = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702";
+const base = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002";
 const socketUrl = base.replace(/^http/, "ws").replace(/\/$/, "") + "/atelier-chat";
 const apiImage = (path?: string) => !path ? "" : /^(https?:|\/)/.test(path) ? path : `${base}/${path}`;
 const isOpenNow = () => {

@@ -5,7 +5,7 @@ export function productImageUrl(value?: string | null): string {
   if (/^https?:\/\//i.test(path) || path.startsWith("//") || path.startsWith("blob:") || path.startsWith("data:image/")) return path;
   const relative = path.replace(/^(?:\.\/|\/)+/, "");
   if (relative.startsWith("uploads/")) {
-    const base = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702").replace(/\/+$/, "");
+    const base = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002").replace(/\/+$/, "");
     return `${base}/${relative}`;
   }
   return `/${relative}`;

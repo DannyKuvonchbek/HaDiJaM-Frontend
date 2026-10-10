@@ -10,7 +10,7 @@ import { useUsdUzsRate } from "@/libs/utils/CurrencyProvider";
 import { formatPrice } from "@/libs/utils/currency";
 
 type SearchProps = { open: boolean; onClose: () => void };
-const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702";
+const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002";
 const imageUrl = (value?: string) => value ? (/^(https?:)?\/\//.test(value) ? value : `${apiBase.replace(/\/$/, "")}/${value.replace(/^\//, "")}`) : "";
 
 export default function HeaderSearch({ open, onClose }: SearchProps) {

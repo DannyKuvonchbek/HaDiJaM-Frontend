@@ -96,7 +96,7 @@ async function uploadReferences(files: File[], token: string): Promise<string[]>
   body.append("operations", JSON.stringify(operations));
   body.append("map", JSON.stringify(map));
   files.forEach((file, index) => body.append(String(index), file, file.name));
-  const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:9702/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
+  const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2002/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
   const payload = await response.json();
   if (!response.ok || payload.errors?.length) throw new Error(payload.errors?.[0]?.message ?? "Reference upload failed.");
   return payload.data?.imagesUploader ?? [];

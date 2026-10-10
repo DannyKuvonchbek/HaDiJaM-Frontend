@@ -706,7 +706,7 @@ export default function AddProductForm() {
                   <article className="seller-inventory-card" key={product._id}>
                     {product.productImages?.[0] ? (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702"}/${product.productImages[0]}`}
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002"}/${product.productImages[0]}`}
                         alt={product.productTitle}
                       />
                     ) : (

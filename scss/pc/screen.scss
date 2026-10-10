@@ -1,8 +1,20 @@
-/* Minimum canvas for desktop layouts, following Nestar's 1300px PC container. */
+/* Center the site canvas on wide monitors so sections do not stretch edge to edge. */
+#__next {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
 @media (min-width: 761px) {
-  body,
+  body {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
   #__next {
-    min-width: 1300px;
+    min-width: 0;
+    max-width: 1600px;
   }
 }
 
@@ -11,5 +23,12 @@
   #__next {
     min-width: 0;
     width: 100%;
+    max-width: 100%;
   }
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
 }

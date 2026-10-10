@@ -10,7 +10,7 @@ HaDiJaM jewelry and atelier marketplace frontend built with Next.js Pages Router
 
 The homepage and collection page use the backend GraphQL `getProducts` query when products are available. Atelier services use `getServices`; sign in and account creation use `login` and `signup`; orders and service appointment requests use `createOrder` and `createServiceBooking`. When the catalogue is empty or the backend is offline, the storefront keeps a local set of sample pieces so the design can still be explored.
 
-The frontend runs on port `1017`; its GraphQL API and uploaded media default to the backend at `http://localhost:9702`. Override `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_API_BASE_URL` in the deployment environment when the backend is hosted at another address.
+The frontend runs on port `1017`; its GraphQL API and uploaded media default to the backend at `http://localhost:2002`. Override `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_API_BASE_URL` in the deployment environment when the backend is hosted at another address.
 
 Product and order prices are shown and entered in USD. The backend still stores numeric prices in UZS, so seller-entered USD amounts are converted using the latest USD rate from the Central Bank of Uzbekistan JSON feed; the app uses a documented fallback rate if that feed is unavailable.
 

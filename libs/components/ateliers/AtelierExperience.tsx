@@ -12,7 +12,7 @@ import { GET_MY_SERVICE_BOOKINGS, GET_MEMBER_PROFILE } from "@/libs/graphql/myPa
 import { readMemberId } from "@/libs/utils/account";
 import { uploadGraphqlFiles } from "@/libs/utils/uploadGraphqlFiles";
 
-const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702";
+const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002";
 const asset = (value?: string) => !value ? "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-licensed-gia-certified-gemologist-utilizing-an-electronic-refractometer--091.jpg" : /^(https?:|data:|\/)/.test(value) ? value : `${apiBase}/${value}`;
 const kstToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 const dateTimeAtKst = (date: string, time: string) => new Date(`${date}T${time}:00+09:00`).toISOString();

@@ -105,7 +105,7 @@ export default function MyPage() {
 			const formData = new FormData();
 			formData.append('operations', JSON.stringify({ query: 'mutation UploadMemberImage($file: Upload!, $target: String!) { imageUploader(file: $file, target: $target) }', variables: { file: null, target: 'member' } }));
 			formData.append('map', JSON.stringify({ '0': ['variables.file'] })); formData.append('0', file, file.name);
-			const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:9702/graphql', { method: 'POST', headers: { authorization: `Bearer ${token}`, 'apollo-require-preflight': 'true' }, body: formData });
+			const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:2002/graphql', { method: 'POST', headers: { authorization: `Bearer ${token}`, 'apollo-require-preflight': 'true' }, body: formData });
 			const payload = await response.json(); const memberImage = payload.data?.imageUploader;
 			if (!response.ok || payload.errors?.length || typeof memberImage !== 'string') throw new Error(payload.errors?.[0]?.message ?? 'Profile photo upload failed. Please try again.');
 			const result = await saveProfile({ variables: { input: { _id: profile._id, memberImage } } });
