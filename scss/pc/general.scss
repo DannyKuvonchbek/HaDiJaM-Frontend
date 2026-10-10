@@ -349,7 +349,12 @@
 }
 
 @media (min-width: 1201px) {
-  .footer-main.shell {
+  .footer-main.shell,
+  .footer-bottom.shell {
     width: min(1700px, calc(100% - 112px));
+  }
+  .footer-brand,
+  .footer-bottom > span:first-child {
+    transform: translateX(clamp(16px, 2vw, 32px));
   }
 }
