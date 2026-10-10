@@ -5,6 +5,7 @@ export const GET_MEMBER_PROFILE = gql`
     getMember(memberId: $memberId) {
       _id
       memberType
+      sellerIntent
       memberStatus
       memberPhone
       memberNick
@@ -49,6 +50,7 @@ export const GET_MY_ORDERS = gql`
         paymentMethod
         paymentStatus
         createdAt
+        memberData { memberFullName memberNick }
         items {
           _id
           productId
@@ -155,5 +157,21 @@ export const GET_MY_FAVORITES = gql`
         total
       }
     }
+  }
+`;
+
+export const GET_MY_NOTIFICATIONS = gql`
+  query GetMyNotifications($input: OrdinaryInquiry!) {
+    getMyNotifications(input: $input) {
+      list { _id notificationType notificationStatus notificationGroup notificationTitle notificationDesc productId createdAt }
+      metaCounter { total }
+      unreadCount
+    }
+  }
+`;
+
+export const MARK_MY_NOTIFICATION_READ = gql`
+  mutation MarkMyNotificationRead($notificationId: String!) {
+    markMyNotificationRead(notificationId: $notificationId) { _id notificationStatus }
   }
 `;

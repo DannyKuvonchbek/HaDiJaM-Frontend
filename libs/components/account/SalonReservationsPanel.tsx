@@ -1,3 +1,4 @@
+import PrivateMediaLink from "@/libs/auth/PrivateMediaLink";
 import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
@@ -183,7 +184,7 @@ export default function SalonReservationsPanel() {
               {manifest?.notes && <div><dt>Client notes</dt><dd>{manifest.notes}</dd></div>}
               {!manifest && <div><dt>Intake details</dt><dd>{reservation.itemManifest?.trim() || "No item details provided"}</dd></div>}
             </dl>
-            {!!manifest?.referenceFiles?.length && <div className="salon-reservation-attachments"><b>Reference images</b>{manifest.referenceFiles.map((path) => <a href={`${apiBase}/${path}`} target="_blank" rel="noreferrer" key={path}>{path.split("/").pop()} ↗</a>)}</div>}
+            {!!manifest?.referenceFiles?.length && <div className="salon-reservation-attachments"><b>Reference images</b>{manifest.referenceFiles.map((path) => <PrivateMediaLink path={path} key={path}>{path.split("/").pop()} ↗</PrivateMediaLink>)}</div>}
             {editingId === reservation._id && <div className="salon-reservation-edit">
               <label>New date<input type="date" min={currentKoreaDate()} value={editDate} onChange={(event) => setEditDate(event.target.value)} /></label>
               <label>New time<input type="time" value={editTime} onChange={(event) => setEditTime(event.target.value)} /></label>

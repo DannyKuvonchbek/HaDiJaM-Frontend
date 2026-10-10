@@ -1,3 +1,4 @@
+import PrivateMediaLink from "@/libs/auth/PrivateMediaLink";
 import { useQuery } from "@apollo/client";
 import { GET_MY_SERVICE_BOOKINGS } from "@/libs/graphql/myPage";
 
@@ -19,7 +20,7 @@ export default function ServiceBookingsPanel() {
     <div className="service-bookings-list">{bookings.map((booking) => <article className="service-booking-receipt" key={booking._id}>
       <div className="service-booking-receipt-heading"><div><span>DATABASE RECORD · {booking.bookingReference ?? booking._id}</span><h3>{booking.serviceTitle || "Atelier Appointment"}</h3></div><b className={`service-booking-status ${booking.bookingStatus.toLowerCase()}`}>{booking.bookingStatus}</b></div>
       <dl><div><dt>Date</dt><dd>{dateLabel(booking.bookingDate, { month: "long", day: "numeric", year: "numeric" })}</dd></div><div><dt>Appointment</dt><dd>{dateLabel(booking.bookingTime, { hour: "2-digit", minute: "2-digit", hour12: false })} KST</dd></div><div><dt>Specialist</dt><dd>{booking.selectedTechnician}</dd></div>{booking.selectedItems?.length > 0 && <div><dt>Pieces</dt><dd>{booking.selectedItems.join(", ")}</dd></div>}{booking.itemDescription && <div><dt>Care notes</dt><dd>{booking.itemDescription}</dd></div>}<div><dt>Amount due</dt><dd>${Number(booking.bookingPrice).toFixed(2)} · {booking.paymentStatus}</dd></div></dl>
-      {booking.itemPhoto && <a className="service-booking-photo" href={`${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702"}/${booking.itemPhoto}`} target="_blank" rel="noreferrer">View uploaded item photo ↗</a>}
+      {booking.itemPhoto && <PrivateMediaLink className="service-booking-photo" path={booking.itemPhoto}>View uploaded item photo ↗</PrivateMediaLink>}
       <p>Saved to your account · booking changes are handled by the atelier.</p>
     </article>)}</div>
   </section>;

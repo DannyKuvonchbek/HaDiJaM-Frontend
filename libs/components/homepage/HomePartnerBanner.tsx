@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useLocale } from '@/libs/utils/LocaleProvider';
 
 export default function HomePartnerBanner() {
+	const { t } = useLocale();
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const sectionRef = useRef<HTMLElement>(null);
 	const [videoVisible, setVideoVisible] = useState(false);
@@ -36,6 +38,6 @@ export default function HomePartnerBanner() {
 			</div>
 			<div className="home-partner-shade" />
 		</div>
-		<div className="home-partner-copy"><span className="eyebrow">THE HAUTE STANDARD</span><h2>Your Trusted Partner in<br />Fine Jewelry &amp; Services</h2><p>Uncompromising authenticity, museum-grade gemological evaluation, and insured escrow for peace of mind.</p><Link href="/services" className="button button-gold">Explore Certified Services <span>→</span></Link></div>
+		<div className="home-partner-copy"><span className="eyebrow">{t('THE HAUTE STANDARD')}</span><h2>{t('Your Trusted Partner in')}<br />{t('Fine Jewelry & Services')}</h2><p>{t('Uncompromising authenticity, museum-grade gemological evaluation, and insured escrow for peace of mind.')}</p><Link href="/services" className="button button-gold">{t('Explore Certified Services')} <span>→</span></Link></div>
 	</section>;
 }

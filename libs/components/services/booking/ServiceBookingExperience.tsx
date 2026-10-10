@@ -1,3 +1,5 @@
+import { authorizedFetch } from "@/libs/auth";
+import { authValue } from "@/libs/auth";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "@apollo/client";
@@ -15,6 +17,10 @@ function matchesServiceKind(service: Service, kind: Kind) {
   return kind === "repair"
     ? /\brepair\b|\brestor(?:ation|ing|e)?\b|micro laser/.test(identity)
     : /ultrasonic|\bpolish(?:ing)?\b|\bclean(?:ing|se|sing)?\b|rhodium/.test(identity);
+}
+
+function isActiveService(service: Service) {
+  return String(service.serviceStatus).trim().toUpperCase() === "ACTIVE";
 }
 
 const repairMasters = [
@@ -47,7 +53,7 @@ async function uploadRepairPhoto(file: File, token: string) {
   body.append("operations", JSON.stringify({ query: "mutation UploadServicePhoto($file: Upload!, $target: String!) { imageUploader(file: $file, target: $target) }", variables: { file: null, target: "service-bookings" } }));
   body.append("map", JSON.stringify({ "0": ["variables.file"] }));
   body.append("0", file, file.name);
-  const response = await fetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:9702/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
+  const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:9702/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
   const payload = await response.json();
   if (!response.ok || payload.errors?.length || typeof payload.data?.imageUploader !== "string") throw new Error(payload.errors?.[0]?.message ?? "Photo upload failed. Please try again.");
   return payload.data.imageUploader as string;
@@ -74,7 +80,7 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
 
   useEffect(() => {
     if (!router.isReady) return;
-    const token = localStorage.getItem("accessToken");
+    const token = authValue("accessToken");
     const id = token ? readMemberId(token) : null;
     if (!token || !id) {
       const next = encodeURIComponent(router.asPath || (polish ? "/services/ultrasonic-cleaning" : "/services/repair-restoration"));
@@ -96,7 +102,7 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
   const service: Service | undefined = useMemo(() => {
     const list: Service[] = servicesQuery.data?.getServices?.list ?? [];
     const queryId = typeof router.query.serviceId === "string" ? router.query.serviceId : "";
-    return list.find((item) => item._id === queryId && item.serviceStatus === "ACTIVE" && matchesServiceKind(item, kind)) ?? list.find((item) => item.serviceStatus === "ACTIVE" && matchesServiceKind(item, kind));
+    return list.find((item) => item._id === queryId && isActiveService(item) && matchesServiceKind(item, kind)) ?? list.find((item) => isActiveService(item) && matchesServiceKind(item, kind));
   }, [servicesQuery.data, router.query.serviceId, kind]);
   const specialists = polish ? polishMasters : repairMasters;
   const slots = polish ? polishSlots : repairSlots;
@@ -126,7 +132,7 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
     if (polish && selectedItems.length === 0) { setErrorMessage("Select at least one piece for treatment."); return; }
     if (!polish && !description.trim()) { setErrorMessage("Describe the repair needed for your piece."); return; }
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = authValue("accessToken");
       if (!token) { void router.push(`/sign-in?mode=signin&next=${encodeURIComponent(router.asPath)}`); return; }
       const itemPhoto = photo ? await uploadRepairPhoto(photo, token) : "";
       const result = await createBooking({ variables: { input: {
@@ -176,7 +182,7 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
         <section className="atelier-booking-panel atelier-client-panel"><div className="atelier-panel-heading"><span>{polish ? "04" : "03"}</span><div><h2>{polish ? "Collector Notes & Contact" : "Client & Jewelry Information"}</h2><p>Details are saved securely with your request</p></div></div><div className="atelier-contact-grid"><label>Full legal name<input value={customerName} onChange={(event) => setCustomerName(event.target.value)} required autoComplete="name" placeholder="Your full name" /></label><label>Direct phone number<input value={phone} onChange={(event) => setPhone(event.target.value)} required autoComplete="tel" placeholder="+82 10-0000-0000" /></label><label className="wide">Delivery or contact address<input value={address} onChange={(event) => setAddress(event.target.value)} required autoComplete="street-address" placeholder="Gangnam-gu, Seoul" /></label><label className="wide">{polish ? "Care notes (optional)" : "Condition & desired repair"}<textarea required={!polish} value={description} onChange={(event) => setDescription(event.target.value)} placeholder={polish ? "Tell us about gemstones or special care instructions" : "Describe the damage, loose stones, metal purity, or prior repairs…"} /></label>{!polish && <label className="atelier-photo-upload">Photographic assessment (optional)<input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" onChange={(event) => setPhoto(event.target.files?.[0] ?? null)} /><small>{photo ? photo.name : "JPG, PNG, WEBP or HEIC · up to 25 MB"}</small></label>}</div></section>
       </div>
 
-      <aside className="atelier-booking-summary"><span className="atelier-booking-eyebrow">INTAKE DOSSIER</span><h2>Reservation Summary</h2><dl><div><dt>Protocol</dt><dd>{polish ? "Ultrasonic + Rhodium Triple Plate" : "Micro-Laser Restoration"}</dd></div><div><dt>Assigned specialist</dt><dd>{technician}</dd></div><div><dt>Intake schedule</dt><dd>{date ? formatDate(date) : "Select a date"}{time ? ` · ${time} KST` : ""}</dd></div>{polish && <div><dt>Selected pieces</dt><dd>{selectedItems.length ? selectedItems.join(", ") : "Select at least one"}</dd></div>}<div><dt>Turnaround</dt><dd>{polish ? "Same day · 1–2 hours" : "24–48 hours"}</dd></div></dl><div className="atelier-total"><span>{polish ? "Total payable" : "Required intake deposit"}<small>{polish ? `${selectedItems.length} piece${selectedItems.length === 1 ? "" : "s"} · payment due at drop-off` : "Applied toward final balance"}</small></span><strong>${totalPrice.toFixed(2)}</strong></div><p className="atelier-payment-note">Booking requests are saved to your account. No payment is charged online.</p>{errorMessage && <p className="atelier-booking-error" role="alert">{errorMessage}</p>}<button className="atelier-submit" type="submit" disabled={bookingState.loading || servicesQuery.loading || !service}>{bookingState.loading ? "Saving your booking…" : polish ? `Book Express Polish · $${totalPrice.toFixed(2)}` : "Confirm Repair Booking · $45 Deposit"}</button>{!service && !servicesQuery.loading && <p className="atelier-booking-error">This service is not currently active in the catalogue.</p>}<div className="atelier-summary-security"><span>◇ Zero-loss insured custody</span><span>✦ Digital intake record</span><span>● Gangnam Flagship Atelier</span></div></aside>
+      <aside className="atelier-booking-summary"><span className="atelier-booking-eyebrow">INTAKE DOSSIER</span><h2>Reservation Summary</h2><dl><div><dt>Protocol</dt><dd>{polish ? "Ultrasonic + Rhodium Triple Plate" : "Micro-Laser Restoration"}</dd></div><div><dt>Assigned specialist</dt><dd>{technician}</dd></div><div><dt>Intake schedule</dt><dd>{date ? formatDate(date) : "Select a date"}{time ? ` · ${time} KST` : ""}</dd></div>{polish && <div><dt>Selected pieces</dt><dd>{selectedItems.length ? selectedItems.join(", ") : "Select at least one"}</dd></div>}<div><dt>Turnaround</dt><dd>{polish ? "Same day · 1–2 hours" : "24–48 hours"}</dd></div></dl><div className="atelier-total"><span>{polish ? "Total payable" : "Required intake deposit"}<small>{polish ? `${selectedItems.length} piece${selectedItems.length === 1 ? "" : "s"} · payment due at drop-off` : "Applied toward final balance"}</small></span><strong>${totalPrice.toFixed(2)}</strong></div><p className="atelier-payment-note">Booking requests are saved to your account. No payment is charged online.</p>{errorMessage && <p className="atelier-booking-error" role="alert">{errorMessage}</p>}{servicesQuery.error ? <div className="atelier-booking-error" role="alert">We could not load the service catalogue: {servicesQuery.error.message}<button type="button" className="atelier-availability-retry" onClick={() => void servicesQuery.refetch()}>Retry service lookup</button></div> : !servicesQuery.loading && !service ? <p className="atelier-booking-error" role="alert">No active catalogue listing matches this service. Please try loading the service again or contact the atelier.</p> : null}<button className="atelier-submit" type="submit" disabled={bookingState.loading || servicesQuery.loading || !service}>{bookingState.loading ? "Saving your booking…" : servicesQuery.loading ? "Loading service…" : polish ? `Book Express Polish · $${totalPrice.toFixed(2)}` : "Confirm Repair Booking · $45 Deposit"}</button><div className="atelier-summary-security"><span>◇ Zero-loss insured custody</span><span>✦ Digital intake record</span><span>● Gangnam Flagship Atelier</span></div></aside>
     </form>
 
     {polish ? <section className="atelier-standard"><span className="atelier-booking-eyebrow">SCIENTIFIC METALLURGY</span><h2>The Rhodium Resurfacing Standard</h2><div>{[["Phase 01", "Micro-Cavitation Immersion", "40kHz ultrasonic waves lift residue from intricate surfaces."], ["Phase 02", "Dialux White Rouge Buff", "A careful buff refines surface brilliance without removing detail."], ["Phase 03", "Electrolytic Rhodium Flash", "A controlled rhodium finish restores a bright protective surface."]].map(([step, heading, text]) => <article key={step}><small>{step}</small><h3>{heading}</h3><p>{text}</p></article>)}</div></section> : <section className="atelier-standard"><span className="atelier-booking-eyebrow">SECURE ATELIER PROTOCOL</span><h2>Care for Heirlooms with Precision</h2><div>{[["01", "Protected Intake", "Your piece is photographed, described, and recorded at intake."], ["02", "Master Restoration", "A selected craftsman performs the agreed repair with precision."], ["03", "Assayed Return", "The completed work is checked before secure return."]].map(([step, heading, text]) => <article key={step}><small>{step}</small><h3>{heading}</h3><p>{text}</p></article>)}</div></section>}

@@ -1,3 +1,4 @@
+import { productImageUrl } from "@/libs/utils/productImage";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
@@ -40,9 +41,7 @@ export default function ProductPage() {
               remote.productDesc ??
               `${remote.productType} · verified by HaDiJaM`,
             category: remote.productType as ProductCategory,
-            image: getProductImage(remote.productType, remote.productTitle, 0, remote.productImages?.[0]
-              ? `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702"}/${remote.productImages[0]}`
-              : product.image),
+            image: remote.productImages?.[0] ? productImageUrl(remote.productImages[0]) : getProductImage(remote.productType, remote.productTitle, 0, product.image),
           }
         : product,
     [remote, product],

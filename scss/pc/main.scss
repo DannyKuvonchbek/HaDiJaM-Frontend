@@ -7,6 +7,7 @@
 @use "./services/salonBooking";
 @use "./services/atelierBooking";
 @use "./services/workflows";
+@use "./ateliers/atelier";
 @use "./account/salonReservations";
 @use "./cart/cart";
 @use "./account/account";
@@ -16,3 +17,5 @@
 @use "./seller/add-product";
 @use "./contact/contact";
 @use "./checkout/checkout";
+@use "./ai/concierge";
+@use "./ai/admin-review";

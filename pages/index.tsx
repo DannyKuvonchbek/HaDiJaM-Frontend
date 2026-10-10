@@ -1,3 +1,4 @@
+import { productImageUrl } from "@/libs/utils/productImage";
 import { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import SiteLayout from '@/libs/components/layout/SiteLayout';
@@ -37,13 +38,13 @@ export default function HomePage() {
 		return remote.map((item, index) => {
 			const fallback = featuredProducts[index % featuredProducts.length].image;
 			const category = (supportedCategories.includes(item.productType as ProductCategory) ? item.productType : 'ring') as ProductCategory;
-			const uploadedImage = item.productImages?.[0] ? `${process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:9702'}/${item.productImages[0]}` : fallback;
+			const uploadedImage = item.productImages?.[0] ? productImageUrl(item.productImages[0]) : fallback;
 			return {
 				id: item._id,
 				title: getProductDisplayTitle(category, item.productTitle, index),
 				subtitle: item.productDesc?.slice(0, 68) || `${item.productType} · verified by HaDiJaM`,
 				price: item.productPrice,
-				image: getProductImage(category, item.productTitle, index, uploadedImage),
+				image: item.productImages?.[0] ? uploadedImage : getProductImage(category, item.productTitle, index, uploadedImage),
 				category,
 				badge: 'Maison verified',
 				seller: 'HaDiJaM Maison',

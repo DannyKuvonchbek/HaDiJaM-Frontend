@@ -1,3 +1,4 @@
+import { authValue } from "@/libs/auth";
 import {
   useEffect,
   useRef,
@@ -80,8 +81,8 @@ export default function AddProductForm() {
   const sellerProductsTotal = sellerProductsData?.getSellerProducts?.metaCounter?.[0]?.total ?? sellerProducts.length;
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    const role = localStorage.getItem("memberType");
+    const token = authValue("accessToken");
+    const role = authValue("memberType");
     if (!token) {
       void router.replace("/sign-in?mode=signin&next=%2Fseller%2Fadd-product");
       return;
@@ -156,7 +157,7 @@ export default function AddProductForm() {
       return;
     }
     const form = new FormData(event.currentTarget);
-    const token = localStorage.getItem("accessToken");
+    const token = authValue("accessToken");
     if (!token) {
       void router.push("/sign-in?mode=signin&next=%2Fseller%2Fadd-product");
       return;

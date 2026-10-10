@@ -1,3 +1,4 @@
+import { authorizedFetch } from "@/libs/auth";
 import { gql } from "@apollo/client";
 
 export const GET_SELLER_PRODUCTS = gql`
@@ -51,7 +52,7 @@ export async function uploadProductImages(
   body.append("map", JSON.stringify(map));
   files.forEach((file, index) => body.append(String(index), file, file.name));
 
-  const response = await fetch(
+  const response = await authorizedFetch(
     process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:9702/graphql",
     {
       method: "POST",

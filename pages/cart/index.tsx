@@ -1,3 +1,4 @@
+import { productImageUrl } from "@/libs/utils/productImage";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -5,7 +6,7 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import SiteLayout from "@/libs/components/layout/SiteLayout";
 import PageIntro from "@/libs/components/layout/PageIntro";
-import { CART_KEY, readCart, writeCart, type CartItem } from "@/libs/cart";
+import { readCart, writeCart, type CartItem } from "@/libs/cart";
 import { formatPrice } from "@/libs/utils/currency";
 import { useUsdUzsRate } from "@/libs/utils/CurrencyProvider";
 
@@ -82,7 +83,7 @@ export default function CartPage() {
               </div>
               {items.map((item) => (
                 <article className="cart-line" key={item.id}>
-                  <img src={item.image} alt={item.title} />
+                  <img src={productImageUrl(item.image)} alt={item.title} />
                   <div className="cart-line-copy">
                     <span>HaDiJaM Maison</span>
                     <h2>{item.title}</h2>

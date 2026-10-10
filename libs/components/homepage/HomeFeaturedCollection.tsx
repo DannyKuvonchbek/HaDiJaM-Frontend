@@ -3,6 +3,7 @@ import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import ProductCard from "@/libs/components/catalog/ProductCard";
 import { homeProductFilters } from "@/libs/data/homepage";
 import type { Product, ProductCategory } from "@/libs/types/product";
+import { useLocale } from "@/libs/utils/LocaleProvider";
 
 export default function HomeFeaturedCollection({
   products,
@@ -13,25 +14,26 @@ export default function HomeFeaturedCollection({
   activeCategory: "all" | ProductCategory;
   onCategoryChange: (category: "all" | ProductCategory) => void;
 }) {
+  const { t } = useLocale();
   return (
     <section className="featured-section home-popular">
       <div className="section-shell">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">VERIFIED VAULT ACQUISITIONS</span>
-            <h2>Popular Pieces</h2>
+            <span className="eyebrow">{t("VERIFIED VAULT ACQUISITIONS")}</span>
+            <h2>{t("Popular Pieces")}</h2>
             <p className="section-subtitle">
-              Timeless pieces selected for their craft and enduring value.
+              {t("Timeless pieces selected for their craft and enduring value.")}
             </p>
           </div>
           <Link className="text-link" href="/catalog">
-            View All Pieces <ArrowForwardRoundedIcon />
+            {t("View All Pieces")} <ArrowForwardRoundedIcon />
           </Link>
         </div>
         <div className="home-product-toolbar">
           <div
             className="home-product-filters"
-            aria-label="Filter popular pieces"
+            aria-label={t("Filter popular pieces")}
           >
             {homeProductFilters.map((filter) => (
               <button
@@ -40,11 +42,11 @@ export default function HomeFeaturedCollection({
                 className={activeCategory === filter.value ? "active" : ""}
                 onClick={() => onCategoryChange(filter.value)}
               >
-                {filter.label}
+                {t(filter.label)}
               </button>
             ))}
           </div>
-          <span>INDEPENDENTLY VERIFIED · SECURE ESCROW</span>
+          <span>{t("INDEPENDENTLY VERIFIED · SECURE ESCROW")}</span>
         </div>
         <div className="product-grid">
           {products.map((product) => (
@@ -53,7 +55,7 @@ export default function HomeFeaturedCollection({
         </div>
         {!products.length && (
           <p className="home-empty-products">
-            More verified pieces in this collection are coming soon.
+            {t("More verified pieces in this collection are coming soon.")}
           </p>
         )}
       </div>

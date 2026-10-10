@@ -1,3 +1,4 @@
+import { authValue } from "@/libs/auth";
 import Link from "next/link";
 import { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
@@ -13,8 +14,7 @@ const services = [
     title: "Jewelry Repair & Restoration",
     category: "REPAIR",
     duration: "24–48h Delivery",
-    image:
-      "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-macro-luxury-photography-of-a-master-jeweler-in-a-dark-bespoke-atelier-e-087.jpg",
+    image: "/images/services/repair-v2.webp",
     description:
       "Laser microweaving, broken chain link repair, secure claw retipping, and gemstone prong tightening executed with microscopic accuracy.",
   },
@@ -22,8 +22,7 @@ const services = [
     title: "Custom Design & 3D Atelier",
     category: "CUSTOM",
     duration: "7–14 Days",
-    image:
-      "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-digital-3d-cad-rendered-jewelry-blueprint-alongside-an-actual-carved-jew-089.jpg",
+    image: "/images/services/custom-design-v2.webp",
     description:
       "Transform a personal heirloom or sketch into a bespoke piece with photorealistic 3D CAD and a wax model preview.",
   },
@@ -31,8 +30,7 @@ const services = [
     title: "Ultrasonic Cleansing & Rhodium Polish",
     category: "POLISHING",
     duration: "Same Day (2–4h)",
-    image:
-      "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-ultrasonic-gemstone-cleansing-tank-with-microscopic-mist-and-brilliant-p-090.jpg",
+    image: "/images/services/cleaning-v2.webp",
     description:
       "High-frequency cleansing, delicate scratch buffing, mirror polishing, and Swiss rhodium plating for lasting brilliance.",
   },
@@ -40,8 +38,7 @@ const services = [
     title: "Certified Gemological Appraisal",
     category: "GEMOLOGY",
     duration: "24h Lab Passport",
-    image:
-      "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-licensed-gia-certified-gemologist-utilizing-an-electronic-refractometer--091.jpg",
+    image: "/images/services/gemology-v2.webp",
     description:
       "Diamond mapping, origin verification, synthetic detection, purity assay, and an official insurance passport.",
   },
@@ -49,19 +46,17 @@ const services = [
     title: "Ring Resizing & Metal Refining",
     category: "RESIZING",
     duration: "24–48h Delivery",
-    image:
-      "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-ring-resizing-mandrel-and-gold-calibration-gauges-on-a-dark-oak-jeweler--092.jpg",
+    image: "/images/services/resizing-v2.webp",
     description:
       "Resize delicate bands and bridal rings without visible seams or compromising stone security.",
   },
   {
-    title: "Safe Escrow & Authentication",
-    category: "ESCROW",
-    duration: "Confidential",
-    image:
-      "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-heavy-steel-high-security-bank-vault-drawer-open-revealing-certified-gol-093.jpg",
+    title: "Precious Metal Assay & Laser Hallmark",
+    category: "ASSAY",
+    duration: "Same Day",
+    image: "/images/services/assay-v2.webp",
     description:
-      "A neutral inspection gateway keeps funds and jewelry in secure custody until assay certification is complete.",
+      "Spectrometric precious-metal analysis with a documented assay and laser hallmark service.",
   },
 ];
 
@@ -76,9 +71,6 @@ export default function ServicesPage() {
   const [bookingService, setBookingService] = useState<string | null>(null);
   const [serviceFilter, setServiceFilter] = useState("All Specializations");
   const [serviceSearch, setServiceSearch] = useState("");
-  const [estimateService, setEstimateService] = useState("Ring Resizing");
-  const [estimateMetal, setEstimateMetal] = useState("18K Gold");
-  const [express, setExpress] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
   const [salonOpen, setSalonOpen] = useState(false);
   const { data } = useQuery(GET_SERVICES, {
@@ -103,7 +95,7 @@ export default function ServicesPage() {
     }
     const accessToken =
       typeof window !== "undefined"
-        ? localStorage.getItem("accessToken")
+        ? authValue("accessToken")
         : null;
     if (!accessToken) {
       window.location.href = "/sign-in?mode=signin&next=%2Fservices";
@@ -138,25 +130,9 @@ export default function ServicesPage() {
     }
   };
   const liveServices = data?.getServices?.list ?? [];
-  const estimateBase: Record<string, number> = {
-    "Ring Resizing": 45,
-    "Claw Retip": 60,
-    "Laser Weld": 35,
-    "Full Overhaul": 80,
-  };
-  const metalFee: Record<string, number> = {
-    "14K Gold": 0,
-    "18K Gold": 15,
-    "24K Pure": 25,
-    "Platinum 950": 35,
-  };
-  const estimateMin =
-    (estimateBase[estimateService] ?? 45) +
-    (metalFee[estimateMetal] ?? 15) +
-    (express ? 30 : 0);
   const visibleServices = services.filter((service) => {
     const group =
-      service.category === "GEMOLOGY"
+      (service.category === "GEMOLOGY" || service.category === "ASSAY")
         ? "Gemology Lab"
         : service.category === "RESTORATION" || service.category === "REPAIR"
           ? "Heirloom Restoration"
@@ -286,11 +262,11 @@ export default function ServicesPage() {
               </div>
             </div>
             <div className="service-grid service-grid-redesign">
-              {visibleServices.map((service, index) => {
+              {visibleServices.map((service) => {
                 const live =
                   liveServices.find(
                     (entry: any) => serviceMatchesCard(entry, service),
-                  ) ?? (service.category === "REPAIR" || service.category === "POLISHING" ? undefined : liveServices[index]);
+                  );
                 return (
                   <article
                     className="service-card service-card-redesign"
@@ -298,17 +274,13 @@ export default function ServicesPage() {
                   >
                     <div className="service-card-image">
                       <img
-                        src={
-                          live?.serviceImages?.[0]
-                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:9702"}/${live.serviceImages[0]}`
-                            : service.image
-                        }
+                        src={service.image}
+                        loading="lazy"
+                        decoding="async"
+                        width={1200}
+                        height={800}
                         alt={service.title}
                       />
-                      <span className="service-photo-meta">
-                        ✦ {service.category.replace("_", " ")} <b>·</b>{" "}
-                        {service.duration}
-                      </span>
                       <EntityLikeButton
                         entityType="service"
                         entityId={live?._id}
@@ -323,6 +295,11 @@ export default function ServicesPage() {
                       />
                     </div>
                     <div className="service-card-copy">
+                      <span className="service-photo-meta">
+                        ✦ {service.category.replace("_", " ")} <b>·</b>{" "}
+                        {service.duration}
+                      </span>
+
                       <div className="service-meta">
                         <VerifiedUserOutlinedIcon /> VERIFIED ATELIER PARTNER
                       </div>
@@ -406,121 +383,6 @@ export default function ServicesPage() {
           </div>
         </section>
 
-        <section className="service-estimator">
-          <div className="service-estimator-inner">
-            <div className="service-estimator-controls">
-              <span className="service-eyebrow">LIVE ATELIER CALCULATOR</span>
-              <h2>Instant Estimation Engine</h2>
-              <p>
-                Configure your heirloom’s parameters to receive an immediate
-                estimate of restoration costs.
-              </p>
-              <label>Select Primary Service</label>
-              <div className="service-choice-row">
-                {Object.keys(estimateBase).map((choice) => (
-                  <button
-                    type="button"
-                    key={choice}
-                    className={estimateService === choice ? "active" : ""}
-                    onClick={() => setEstimateService(choice)}
-                  >
-                    {choice}
-                  </button>
-                ))}
-              </div>
-              <label>Precious Metal Composition</label>
-              <div className="service-choice-row metals">
-                {Object.keys(metalFee).map((choice) => (
-                  <button
-                    type="button"
-                    key={choice}
-                    className={estimateMetal === choice ? "active" : ""}
-                    onClick={() => setEstimateMetal(choice)}
-                  >
-                    ◉ {choice}
-                  </button>
-                ))}
-              </div>
-              <label>Priority Turnaround Speed</label>
-              <div className="service-speed">
-                <button
-                  type="button"
-                  className={!express ? "active" : ""}
-                  onClick={() => setExpress(false)}
-                >
-                  Standard Atelier (3–5 Days)
-                </button>
-                <button
-                  type="button"
-                  className={express ? "active" : ""}
-                  onClick={() => setExpress(true)}
-                >
-                  Express 24H (+$30)
-                </button>
-              </div>
-            </div>
-            <aside className="service-estimate-card">
-              <span className="service-eyebrow">
-                ◉ AI LOUPE &amp; METROLOGY SCAN ACTIVE
-              </span>
-              <small>Sample #HA-9428</small>
-              <img
-                src="/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-macro-luxury-photography-of-a-master-jeweler-in-a-dark-bespoke-atelier-e-087.jpg"
-                alt="Macro inspection of a gold ring in the atelier"
-              />
-              <div className="service-diagnostic">
-                <b>✦ Diagnostic Note</b>
-                <p>
-                  Minor prong fatigue detected at 2 o’clock. Recommended master:
-                  Kang &amp; Sons Atelier.
-                </p>
-              </div>
-              <dl>
-                <div>
-                  <dt>Estimated scope</dt>
-                  <dd>Claw reconstruction + laser micro-weld + polish</dd>
-                </div>
-                <div>
-                  <dt>State hallmark fee</dt>
-                  <dd>Included ($0.00)</dd>
-                </div>
-                <div>
-                  <dt>Armored courier</dt>
-                  <dd>Free &amp; fully insured</dd>
-                </div>
-              </dl>
-              <small>ALGORITHMIC ESTIMATED RANGE</small>
-              <strong className="service-estimate-price">
-                ${estimateMin} – ${Math.round(estimateMin * 1.35)}
-              </strong>
-              <button
-                type="button"
-                onClick={() => setBookingService("consultation")}
-              >
-                Proceed with quote <span>→</span>
-              </button>
-              <button
-                type="button"
-                className="service-upload"
-                onClick={() =>
-                  document.getElementById("service-photo-upload")?.click()
-                }
-              >
-                ＋ Upload another angle or gemstone video
-              </button>
-              <input
-                id="service-photo-upload"
-                type="file"
-                accept="image/*,video/*"
-                hidden
-              />
-              <small className="service-secure">
-                ◇ Zero Obligation · Metrological Escrow Protected
-              </small>
-            </aside>
-          </div>
-        </section>
-
         <section className="service-masters">
           <div className="service-content-width">
             <div className="service-section-heading">
@@ -538,6 +400,7 @@ export default function ServicesPage() {
               {[
                 [
                   "Kang & Sons Haute Atelier",
+                  "kang-and-sons",
                   "Cheongdam-dong, Seoul",
                   "Second-generation master goldsmith with 28 years of bespoke bridal restorations.",
                   "Platinum Master · Hand Engraving",
@@ -547,6 +410,7 @@ export default function ServicesPage() {
                 ],
                 [
                   "Aurum Gemological Lab",
+                  "aurum-gemological-lab",
                   "Gangnam, Seoul",
                   "GIA Graduate Gemologist specializing in spectroscopy and gemstone origin reports.",
                   "GIA Certified · Spectroscopy",
@@ -556,6 +420,7 @@ export default function ServicesPage() {
                 ],
                 [
                   "Milano Heritage Restoration",
+                  "milano-heritage-restoration",
                   "Itaewon, Seoul",
                   "Archival vintage restoration, Art Deco filigree stabilization, and precious gemstone recutting.",
                   "Art Deco · Gem Recutting",
@@ -563,9 +428,15 @@ export default function ServicesPage() {
                   "4.95",
                   "640",
                 ],
-              ].map(([name, location, bio, tags, image, rating, jobs]) => (
+              ].map(([name, slug, location, bio, tags, image, rating, jobs]) => (
                 <article key={name}>
-                  <img src={`/images/stitch/services/${image}`} alt={name} />
+                  <Link
+                    href={`/atelier/${slug}`}
+                    className="service-master-image-link"
+                    aria-label={`View ${name} atelier profile`}
+                  >
+                    <img src={`/images/stitch/services/${image}`} alt={name} />
+                  </Link>
                   <div>
                     <span>
                       ★ {rating} <small>({jobs} jobs)</small>
@@ -574,12 +445,7 @@ export default function ServicesPage() {
                     <small>{location}</small>
                     <p>{bio}</p>
                     <label>{tags}</label>
-                    <button
-                      type="button"
-                      onClick={() => setBookingService("consultation")}
-                    >
-                      Request consultation →
-                    </button>
+                    <Link href={`/atelier/${slug}`}>Visit atelier →</Link>
                   </div>
                 </article>
               ))}
@@ -661,19 +527,19 @@ export default function ServicesPage() {
               Insured door-to-door courier dispatch or schedule a private
               appointment in Cheongdam-dong.
             </p>
-            <button
-              type="button"
-              onClick={() => setBookingService("consultation")}
-            >
-              Book Priority Atelier Slot →
-            </button>
-            <button
-              type="button"
-              className="ghost"
-              onClick={() => setSalonOpen(true)}
-            >
-              Schedule Gangnam Salon Visit
-            </button>
+            <div className="service-salon-action">
+              <button
+                type="button"
+                className="service-salon-cta"
+                aria-haspopup="dialog"
+                onClick={() => setSalonOpen(true)}
+              >
+                <span className="service-salon-cta-icon" aria-hidden="true">◈</span>
+                <span>Schedule Gangnam Salon Visit<small>Choose your private suite, date &amp; time</small></span>
+                <ArrowForwardRoundedIcon />
+              </button>
+              <span className="service-salon-location">CHEONGDAM-DONG · SEOUL</span>
+            </div>
           </div>
           <img
             src="/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-macro-cinematic-photo-of-an-open-black-velvet-bespoke-jewelry-box-displa-097.jpg"

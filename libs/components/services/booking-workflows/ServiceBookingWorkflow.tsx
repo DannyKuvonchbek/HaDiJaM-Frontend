@@ -1,3 +1,5 @@
+import { authorizedFetch } from "@/libs/auth";
+import { authValue } from "@/libs/auth";
 import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
@@ -94,7 +96,7 @@ async function uploadReferences(files: File[], token: string): Promise<string[]>
   body.append("operations", JSON.stringify(operations));
   body.append("map", JSON.stringify(map));
   files.forEach((file, index) => body.append(String(index), file, file.name));
-  const response = await fetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:9702/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
+  const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:9702/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
   const payload = await response.json();
   if (!response.ok || payload.errors?.length) throw new Error(payload.errors?.[0]?.message ?? "Reference upload failed.");
   return payload.data?.imagesUploader ?? [];
@@ -156,7 +158,7 @@ export default function ServiceBookingWorkflow({ kind }: { kind: Workflow }) {
     setConfirmation("");
     if (appointmentDate.getTime() <= Date.now()) { setErrorMessage("Choose a future date and time."); return; }
     if (slotBooked) { setErrorMessage("That appointment time was just reserved. Please choose another slot."); return; }
-    const token = localStorage.getItem("accessToken");
+    const token = authValue("accessToken");
     if (!token) {
       await router.push(`/sign-in?mode=signin&next=%2Fservices%2F${spec.slug}`);
       return;

@@ -1,3 +1,5 @@
+import { authValue } from "@/libs/auth";
+import { productImageUrl } from "@/libs/utils/productImage";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useApolloClient, useMutation } from "@apollo/client";
 import Head from "next/head";
@@ -6,7 +8,7 @@ import { useRouter } from "next/router";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
-import { CART_KEY, readCart, writeCart, type CartItem } from "@/libs/cart";
+import { readCart, writeCart, type CartItem } from "@/libs/cart";
 import { CREATE_ORDER } from "@/libs/graphql/orders";
 import { GET_PRODUCT } from "@/libs/graphql/products";
 import { formatPrice } from "@/libs/utils/currency";
@@ -95,7 +97,7 @@ export default function CheckoutPage() {
     event.preventDefault();
     setError("");
     if (!items.length || unavailableItems || productsLoading) return;
-    if (!localStorage.getItem("accessToken")) {
+    if (!authValue("accessToken")) {
       await router.push("/sign-in?mode=signin&next=%2Fcheckout");
       return;
     }
@@ -138,7 +140,6 @@ export default function CheckoutPage() {
       });
       const orderId = result.data?.createOrder?._id;
       if (!orderId) throw new Error("The order could not be confirmed. Please try again.");
-      localStorage.removeItem(CART_KEY);
       writeCart([]);
       await router.push(`/order-confirmation?orderId=${encodeURIComponent(orderId)}`);
     } catch (cause) {
@@ -231,7 +232,7 @@ export default function CheckoutPage() {
                 {items.map((line) => {
                   const product = line.product;
                   return <article className="checkout-review-item" key={line.id}>
-                    <img src={product?.productImages?.[0] || line.image} alt={product?.productTitle || line.title} />
+                    <img src={productImageUrl(product?.productImages?.[0]) || productImageUrl(line.image)} alt={product?.productTitle || line.title} />
                     <div><h3>{product?.productTitle || line.title}</h3><p>{product ? formatPrice(product.productPrice, usdUzsRate) : "Unavailable"} · Qty: {line.quantity}</p><small>◇ In Vault</small></div>
                     <strong>{product ? formatPrice(product.productPrice * line.quantity, usdUzsRate) : "—"}</strong>
                   </article>;

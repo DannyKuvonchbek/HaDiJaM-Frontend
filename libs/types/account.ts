@@ -1,8 +1,9 @@
-export type AccountTab = 'profile' | 'orders' | 'saved' | 'salon' | 'services';
+export type AccountTab = 'profile' | 'orders' | 'saved' | 'salon' | 'services' | 'messages' | 'atelier-inbox';
 
 export type MemberProfile = {
 	_id: string;
 	memberType: 'USER' | 'SELLER' | 'ADMIN';
+	sellerIntent?: boolean;
 	memberStatus: string;
 	memberPhone: string;
 	memberNick: string;
@@ -27,6 +28,7 @@ export type AccountOrder = {
 	paymentMethod: string;
 	paymentStatus: string;
 	createdAt: string;
+	memberData?: { memberFullName?: string; memberNick?: string };
 	items: Array<{
 		_id: string;
 		productId: string;

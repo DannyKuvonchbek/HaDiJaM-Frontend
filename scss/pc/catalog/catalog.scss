@@ -966,6 +966,7 @@
   align-items: center;
   gap: 7px;
 }
+.marketplace-page-ellipsis { color: #9b9488; font-size: 14px; }
 .marketplace-pagination button {
   display: grid;
   width: 36px;
@@ -976,9 +977,11 @@
   color: #ddd7cb;
   background: #292826;
   font-size: 14px;
+  cursor: pointer;
 }
 .marketplace-pagination button:disabled {
   color: #777167;
+  cursor: not-allowed;
 }
 .marketplace-pagination button.current {
   color: #302507;

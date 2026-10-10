@@ -1,3 +1,4 @@
+import { authValue } from "@/libs/auth";
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
@@ -156,7 +157,7 @@ export default function SalonSuiteBooking({ open, onClose }: Props) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const token = window.localStorage.getItem("accessToken");
+    const token = authValue("accessToken");
     if (!token) {
       await router.push("/sign-in?mode=signin&next=%2Fservices");
       return;
@@ -200,10 +201,9 @@ export default function SalonSuiteBooking({ open, onClose }: Props) {
         amenities: chosenAmenities.map((id) => amenities.find((item) => item.id === id)?.name ?? id),
         valet,
       });
-    } catch (requestError) {
-      console.error("Salon reservation failed", requestError);
+    } catch {
       setError(
-        "Bronni saqlab bo‘lmadi. Internet aloqasini tekshirib, qayta urinib ko‘ring.",
+        "We could not save your reservation. Check your connection and try again.",
       );
     }
   };

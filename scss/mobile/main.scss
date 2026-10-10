@@ -1,5 +1,7 @@
 @use "./services/workflows";
 
+@use "./ai";
+
 @media (max-width: 1100px) {
   .shell,
   .section-shell {
@@ -86,9 +88,14 @@
     font-size: 22px;
   }
   .header-actions .account-link-authenticated.MuiIconButton-root {
-    width: 42px;
-    height: 42px;
-    min-height: 42px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .header-actions .account-link-authenticated .MuiSvgIcon-root {
+    color: #fff;
+    font-size: 30px;
   }
   .header-actions .account-link:not(.account-link-authenticated) {
     width: 38px;
@@ -113,6 +120,35 @@
     border-top: 1px solid rgba(212, 175, 55, 0.16);
     box-shadow: 0 25px 35px rgba(0, 0, 0, 0.45);
   }
+  .mobile-language-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 18px;
+    color: #ddd5c6;
+    font-size: 14px;
+  }
+  .mobile-language-picker select {
+    min-width: 132px;
+    padding: 9px 12px;
+    border: 1px solid rgba(212, 175, 55, .3);
+    border-radius: 8px;
+    color: #f3e9ca;
+    background: #201f1d;
+    font: inherit;
+  }
+  .header-search-backdrop { padding: 78px 12px 12px; }
+  .header-search-dialog { max-height: calc(100vh - 92px); border-radius: 13px; }
+  .header-search-form { gap: 9px; padding: 13px; }
+  .header-search-form input { font-size: 15px; }
+  .header-search-content { padding: 14px; }
+  .header-search-result { gap: 9px; min-height: 62px; padding: 7px; }
+  .header-search-result > img,
+  .header-search-result-icon { flex-basis: 44px; width: 44px; height: 44px; }
+  .header-search-result strong { font-size: 13px; }
+  .header-search-result small { font-size: 11px; }
   .mobile-nav a {
     display: flex;
     justify-content: space-between;

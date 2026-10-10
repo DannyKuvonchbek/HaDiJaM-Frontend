@@ -3,6 +3,7 @@ import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import DiamondOutlinedIcon from "@mui/icons-material/DiamondOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import { useLocale } from "@/libs/utils/LocaleProvider";
 
 const assurances = [
   {
@@ -28,6 +29,7 @@ const assurances = [
 ];
 
 export default function HeroSection() {
+  const { t } = useLocale();
   return (
     <>
       <section className="hero-section">
@@ -35,46 +37,44 @@ export default function HeroSection() {
         <div className="shell hero-grid">
           <div className="hero-copy">
             <div className="eyebrow">
-              <span /> PREMIUM JEWELRY &amp; SERVICE MARKETPLACE
+              <span /> {t("PREMIUM JEWELRY & SERVICE MARKETPLACE")}
             </div>
             <h1>
-              Timeless Beauty,
+              {t("Timeless Beauty,")}
               <br />
-              <em>Lasting Value.</em>
+              <em>{t("Lasting Value.")}</em>
             </h1>
             <p className="hero-lede">
-              Discover bespoke atelier craftsmanship, independently appraised
-              18K &amp; 24K gold pieces, and verified services — all in one
-              curated sanctuary.
+              {t("Discover bespoke atelier craftsmanship, independently appraised 18K & 24K gold pieces, and verified services — all in one curated sanctuary.")}
             </p>
             <div className="hero-buttons">
               <Link href="/catalog" className="button button-gold">
-                Explore Marketplace <span>→</span>
+                {t("Explore Marketplace")} <span>→</span>
               </Link>
               <Link href="/services" className="button button-quiet">
-                Our Services
+                {t("Our Services")}
               </Link>
             </div>
             <div className="hero-metrics">
               <span>
-                <b>14,800+</b> VERIFIED PIECES
+                <b>14,800+</b> {t("VERIFIED PIECES")}
               </span>
               <span>
-                <b>100%</b> ASSAY ASSURED
+                <b>100%</b> {t("ASSAY ASSURED")}
               </span>
               <span>
-                <b>4.98 / 5</b> CLIENT SATISFACTION
+                <b>4.98 / 5</b> {t("CLIENT SATISFACTION")}
               </span>
             </div>
           </div>
           <div
             className="hero-art"
-            aria-label="HaDiJaM fine jewelry collection"
+            aria-label={t("HaDiJaM fine jewelry collection")}
           >
             <div className="hero-art-frame">
               <img
                 src="/images/stitch/home/hadijam-bosh-sahifa-desktop-homepage-hadijam-fine-jewelry-collection-015.jpg"
-                alt="HaDiJaM fine jewelry collection"
+                alt={t("HaDiJaM fine jewelry collection")}
               />
             </div>
             <div className="hero-art-topline">
@@ -92,8 +92,8 @@ export default function HeroSection() {
             <article key={item.title}>
               <span className="hero-assurance-icon">{item.icon}</span>
               <div>
-                <strong>{item.title}</strong>
-                <small>{item.detail}</small>
+                <strong>{t(item.title)}</strong>
+                <small>{t(item.detail)}</small>
               </div>
             </article>
           ))}

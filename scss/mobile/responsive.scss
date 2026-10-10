@@ -1,0 +1,176 @@
+// Loaded after desktop styles. Brand imagery and desktop layout remain unchanged.
+@media (max-width: 1299px) {
+  body, #__next { min-width: 0; width: 100%; }
+  .site-layout, .site-layout main, .shell, .section-shell { min-width: 0; }
+  .atelier-booking-main, .atelier-booking-summary, .workflow-steps, .workflow-ledger,
+  .account-details-column, .marketplace-results, .checkout-form-column { min-width: 0; }
+  .atelier-booking-panel, .workflow-section, .seller-panel { min-width: 0; }
+  .atelier-date-strip { max-width: 100%; }
+  .salon-suite-card:nth-child(n + 4) { display: flex; }
+}
+@media (min-width: 761px) and (max-width: 1299px) {
+  .shell, .section-shell { width: calc(100% - 48px); }
+  .header-main { grid-template-columns: auto 1fr auto; gap: 16px; }
+  .desktop-nav { gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .desktop-nav a { font-size: 12px; }
+  .header-actions { gap: 0; }
+  .header-actions .MuiIconButton-root { width: 34px; height: 40px; }
+  .brand-wordmark strong { font-size: 17px; }
+  .brand-wordmark small { font-size: 8px; }
+  .service-grid-redesign { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .service-hero-inner, .atelier-hero { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 22px; }
+  .service-hero-copy, .atelier-hero-copy { min-width: 0; }
+  .service-searchbar { flex-wrap: wrap; }
+  .atelier-main-grid, .atelier-booking-form, .workflow-grid { grid-template-columns: minmax(0,1fr); }
+  .atelier-booking-summary, .workflow-ledger { position: static; }
+  .account-portal-grid { grid-template-columns: 260px minmax(0, 1fr); gap: 18px; }
+  .service-closing { width: calc(100% - 48px); padding: 28px; gap: 24px; }
+  .service-closing > img { width: 190px; height: 190px; }
+  .admin-console-toolbar { flex-wrap: wrap; }
+}
+@media (max-width: 760px) {
+  html { scroll-padding-top: 90px; }
+  .site-layout img { max-width: 100%; }
+  .site-layout input, .site-layout select, .site-layout textarea,
+  .checkout-page input, .checkout-page select, .checkout-page textarea,
+  .seller-console input, .seller-console select, .seller-console textarea { font-size: 16px; max-width: 100%; }
+  .site-layout h1, .site-layout h2, .site-layout h3, .site-layout p { overflow-wrap: break-word; }
+  .site-layout button, .site-layout a, .checkout-page button { touch-action: manipulation; }
+  .header-main { width: calc(100% - 24px); grid-template-columns: 40px minmax(0,1fr) auto; gap: 4px; }
+  .brand-lockup { min-width: 0; gap: 6px; }
+  .brand-lockup img { width: 26px; height: 26px; }
+  .brand-wordmark strong { font-size: 15px; }
+  .brand-wordmark small { font-size: 7px; letter-spacing: .1em; }
+  .header-actions .account-link-authenticated.MuiIconButton-root { min-width: 40px; width: 40px; height: 44px; min-height: 44px; }
+  .header-actions .MuiIconButton-root { width: 34px; height: 44px; }
+  .header-actions .account-link-avatar { width: 29px; height: 29px; }
+  .top-ribbon { height: auto; min-height: 28px; padding: 6px 12px; line-height: 1.5; font-size: 8px; }
+  .mobile-nav { max-height: calc(100dvh - 100px); overflow-y: auto; overscroll-behavior: contain; }
+  .mobile-nav a, .mobile-nav > button { min-height: 44px; }
+  .hero-lede, .section-subtitle, .home-service-card p, .home-review-grid article > p { font-size: 14px; line-height: 1.7; }
+  .category-tile:last-child { display: block; }
+  .category-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .section-heading { flex-wrap: wrap; gap: 12px; }
+  .product-grid, .marketplace-products.columns-2, .marketplace-products.columns-3 { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .product-card, .product-copy, .marketplace-results-controls { min-width: 0; }
+  .marketplace-results-controls { flex-wrap: wrap; gap: 10px; }
+  .marketplace-results-controls > label { min-width: 0; width: 100%; }
+  .marketplace-grid-toggle { display: none; }
+  .marketplace-apply-button { white-space: normal; min-height: 44px; }
+  .marketplace-pagination { flex-wrap: wrap; gap: 12px; }
+  .marketplace-pagination > div { flex-wrap: wrap; }
+  .marketplace-trust article { min-width: 0; }
+  .marketplace-trust .material-symbols-outlined { flex: 0 0 32px; width: 32px; overflow: hidden; }
+  .detail-main-image { min-width: 0; height: auto; aspect-ratio: 1; }
+  .detail-main-image img { width: 100%; height: 100%; object-fit: contain; }
+  .detail-actions { flex-wrap: wrap; }
+  .detail-thumbnails { max-width: 100%; overflow-x: auto; }
+  .service-content-width, .service-hero-inner { width: calc(100% - 32px); }
+  .service-grid-redesign { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .service-card-redesign { padding: 10px; border-radius: 18px; }
+  .service-card-redesign .service-card-image { height: auto; min-height: 0; aspect-ratio: 3 / 2; }
+  .service-card-redesign .service-card-copy { padding: 16px 8px 8px; }
+  .service-card-redesign .service-card-copy h3 { font-size: 23px; }
+  .service-card-redesign .service-card-copy p { font-size: 14px; }
+  .service-card-redesign .service-card-copy .text-link { min-height: 46px; white-space: normal; gap: 10px; }
+  .service-closing { width: calc(100% - 32px); padding: 22px; gap: 24px; flex-direction: column; }
+  .service-closing > div { width: 100%; min-width: 0; }
+  .service-closing h2 { font-size: 29px; }
+  .service-closing p { font-size: 14px; }
+  .service-closing > img { display: block; width: 100%; height: 220px; object-fit: cover; }
+  .service-salon-action { width: 100%; }
+  .service-closing .service-salon-cta { width: 100%; gap: 10px; padding: 13px; font-size: 13px; }
+  .service-salon-cta > span:nth-child(2) { min-width: 0; }
+  .service-salon-cta > svg { flex: 0 0 20px; margin-left: auto; }
+  .service-salon-cta small { font-size: 10px; }
+  .atelier-booking-form, .atelier-main-grid, .workflow-grid { grid-template-columns: minmax(0,1fr); }
+  .atelier-booking-main, .atelier-booking-panel, .atelier-date-strip { width: 100%; min-width: 0; }
+  .atelier-date-strip { overflow-x: auto; overscroll-behavior-x: contain; }
+  .atelier-technician { min-width: 0; }
+  .atelier-time-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .atelier-technician p { overflow-wrap: anywhere; }
+  .atelier-booking-summary, .workflow-ledger { position: static; }
+  .workflow-date-grid, .workflow-time-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .atelier-hero-actions .atelier-button { flex: 1 1 140px; }
+  .atelier-breadcrumb { flex-wrap: wrap; }
+  .atelier-section-heading { flex-wrap: wrap; }
+  .atelier-chat-composer textarea { min-width: 0; font-size: 16px; }
+  .salon-backdrop { padding: 0; }
+  .salon-modal { max-height: 100dvh; }
+  .salon-modal-body { min-width: 0; overflow-x: hidden; }
+  .salon-suite-grid { grid-template-columns: minmax(0,1fr); }
+  .salon-suite-card:nth-child(n + 4) { display: flex; }
+  .salon-amenity-grid { grid-template-columns: minmax(0,1fr); }
+  .salon-modal-header { gap: 10px; }
+  .salon-modal-header h2 { font-size: 21px; }
+  .salon-modal input, .salon-modal textarea, .salon-modal select { font-size: 16px; }
+  .account-portal-grid { grid-template-columns: minmax(0,1fr); }
+  .account-tabs { max-width: 100%; overflow-x: auto; }
+  .account-tabs button { min-height: 44px; flex: 0 0 auto; }
+  .account-avatar-upload { opacity: 1; background: linear-gradient(transparent 50%, rgba(10,10,10,.85)); justify-content: flex-end; padding-bottom: 13px; }
+  .account-order-top, .account-order-bottom, .account-progress-summary { flex-wrap: wrap; }
+  .account-order-piece { min-width: 0; }
+  .account-order-piece > div { min-width: 0; }
+  .account-order-price { width: 100%; align-items: flex-start; }
+  .account-order-items h4 { font-size: 15px; overflow-wrap: anywhere; }
+  .account-order-items img { flex-shrink: 0; }
+  .account-order-modal-backdrop, .modal-backdrop, .admin-message-backdrop { padding: 12px; }
+  .account-order-modal, .booking-modal, .admin-message-dialog, .atelier-booking-modal { width: 100%; max-height: calc(100dvh - 24px); overflow-y: auto; }
+  .auth-submit, .auth-mode button, .auth-role-option { min-height: 44px; }
+  .cart-line, .checkout-summary-line { min-width: 0; }
+  .cart-line > div, .checkout-summary-line > div { min-width: 0; }
+  .cart-quantity button { min-width: 36px; min-height: 40px; }
+  .checkout-progress { max-width: 100%; flex-wrap: wrap; }
+  .checkout-steps { width: 100%; gap: 10px; }
+  .checkout-card { min-width: 0; }
+  .checkout-summary { position: static; }
+  .admin-console-header h1 { font-size: 32px; }
+  .admin-console-toolbar h2 { font-size: 21px; }
+  .admin-console-toolbar select { min-width: 0; max-width: 100%; }
+  .admin-table-wrap { max-width: 100%; overscroll-behavior-x: contain; }
+  .admin-pagination > div { gap: 8px; flex-wrap: wrap; }
+  .footer-main p, .footer-main > div:not(.footer-brand) { font-size: 13px; }
+  .footer-bottom { font-size: 10px; line-height: 1.6; }
+}
+@media (max-width: 560px) {
+  .seller-console { display: block; }
+  .seller-sidebar { display: block; position: static; width: 100%; padding: 68px 13px 12px; border-right: 0; border-bottom: 1px solid rgba(212,175,55,.16); }
+  .seller-sidebar .seller-brand, .seller-sidebar-member, .seller-vault-status { display: none; }
+  .seller-sidebar nav { display: flex; gap: 8px; overflow-x: auto; }
+  .seller-sidebar nav a { flex: 0 0 auto; min-height: 44px; padding: 0 12px; }
+  .seller-sidebar .seller-nav-label { display: inline; font-size: 12px; }
+  .seller-sidebar nav .seller-nav-disabled { display: none; }
+  .seller-workspace { padding-top: 24px; }
+  .seller-title-row { flex-wrap: wrap; gap: 12px; }
+  .seller-title-row p, .seller-panel label, .seller-inventory-card p { font-size: 13px; }
+  .seller-submit-bar { flex-wrap: wrap; gap: 12px; }
+}
+@media (max-width: 360px) {
+  .brand-wordmark small { display: none; }
+  .brand-lockup img { width: 22px; height: 22px; }
+  .brand-wordmark strong { font-size: 13px; }
+  .header-actions .MuiIconButton-root { width: 32px; }
+  .product-grid, .marketplace-products.columns-2, .marketplace-products.columns-3,
+  .account-saved-grid, .atelier-product-grid { grid-template-columns: minmax(0,1fr); }
+  .service-closing .service-salon-cta { font-size: 12px; }
+  .service-salon-cta-icon { display: none; }
+}
+
+@media (max-width: 760px) {
+  .ai-concierge-launcher { right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); min-height: 48px; padding: 0 16px; }
+  .ai-concierge-scrim { padding: 12px; }
+  .ai-concierge-panel { width: 100%; height: calc(100dvh - 24px); min-width: 0; }
+  .ai-concierge-header { padding: 14px; gap: 8px; }
+  .ai-concierge-header > div { min-width: 0; }
+  .ai-concierge-header h2 { font-size: 19px; }
+  .ai-concierge-messages { min-height: 0; padding: 14px; }
+  .ai-concierge-message p { overflow-wrap: anywhere; }
+  .ai-concierge-composer { padding: 12px; gap: 8px; }
+  .ai-concierge-composer textarea { min-width: 0; font-size: 16px; }
+  .ai-concierge-history select { font-size: 16px; }
+  .admin-ai-review-backdrop { padding: 12px; }
+  .admin-ai-review-dialog { padding: 24px 16px; max-height: calc(100dvh - 24px); }
+  .admin-ai-review-dialog h2 { font-size: 27px; padding-right: 35px; }
+  .admin-ai-review-draft textarea { font-size: 16px; }
+  .admin-ai-review-actions { flex-wrap: wrap; }
+}

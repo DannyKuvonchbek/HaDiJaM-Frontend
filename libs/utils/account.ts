@@ -35,7 +35,7 @@ export function readMemberId(token: string): string {
     const payload = JSON.parse(
       window.atob(encoded.padEnd(Math.ceil(encoded.length / 4) * 4, "=")),
     );
-    return typeof payload._id === "string" ? payload._id : "";
+    return typeof payload.sub === "string" ? payload.sub : "";
   } catch {
     return "";
   }

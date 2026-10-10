@@ -1,3 +1,4 @@
+import { authValue } from "@/libs/auth";
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { IconButton } from "@mui/material";
@@ -43,7 +44,7 @@ export default function EntityLikeButton({
 
   const toggleLike = async () => {
     if (!canLike || loading) return;
-    const token = localStorage.getItem("accessToken");
+    const token = authValue("accessToken");
     if (!token) {
       const next = encodeURIComponent(router.asPath || "/");
       await router.push(`/sign-in?mode=signin&next=${next}`);

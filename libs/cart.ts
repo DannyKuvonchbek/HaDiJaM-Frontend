@@ -1,3 +1,6 @@
+import { authValue } from "@/libs/auth";
+import { readMemberId } from "@/libs/utils/account";
+
 export interface CartItem {
   id: string;
   title: string;
@@ -6,23 +9,38 @@ export interface CartItem {
   quantity: number;
 }
 
-export const CART_KEY = "hadijam:cart";
+const CART_KEY_PREFIX = "hadijam:cart:";
+
+function currentMemberCartKey(): string | null {
+  if (typeof window === "undefined") return null;
+  const token = authValue("accessToken");
+  if (!token) return null;
+  const memberId = readMemberId(token);
+  return memberId ? `${CART_KEY_PREFIX}${memberId}` : null;
+}
 
 export function readCart(): CartItem[] {
-  if (typeof window === "undefined") return [];
+  const key = currentMemberCartKey();
+  if (!key) return [];
   try {
-    return JSON.parse(localStorage.getItem(CART_KEY) ?? "[]") as CartItem[];
+    return JSON.parse(localStorage.getItem(key) ?? "[]") as CartItem[];
   } catch {
     return [];
   }
 }
 
 export function writeCart(items: CartItem[]) {
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
+  const key = currentMemberCartKey();
+  if (key) localStorage.setItem(key, JSON.stringify(items));
   window.dispatchEvent(new Event("hadijam:cart-updated"));
 }
 
 export function addToCart(item: Omit<CartItem, "quantity">) {
+  if (!currentMemberCartKey()) {
+    const next = `${window.location.pathname}${window.location.search}`;
+    window.location.assign(`/sign-in?mode=signin&next=${encodeURIComponent(next)}`);
+    return;
+  }
   const cart = readCart();
   const existing = cart.find((line) => line.id === item.id);
   if (existing) existing.quantity += 1;
