@@ -634,6 +634,14 @@ em {
   justify-self: end;
   margin-right: 4%;
 }
+@media (min-width: 1500px) {
+  .hero-copy {
+    transform: translateX(clamp(70px, 8vw, 150px));
+  }
+  .hero-art {
+    transform: translateX(clamp(-150px, -8vw, -70px));
+  }
+}
 .hero-art-frame {
   width: 100%;
   padding: 0;
