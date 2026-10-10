@@ -1,7 +1,7 @@
-/* Center the site canvas on wide monitors so sections do not stretch edge to edge. */
+/* Keep a subtle gutter on wide monitors without making the site feel narrow. */
 #__next {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1840px;
   margin-inline: auto;
 }
 
@@ -14,7 +14,7 @@
 
   #__next {
     min-width: 0;
-    max-width: 1600px;
+    max-width: 1840px;
   }
 }
 

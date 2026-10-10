@@ -13,7 +13,7 @@ export default function AuthBootstrap({children}:{children:ReactNode}) {
     void initializeAuth().then(()=>{if(mounted)setReady(true);}).catch(()=>{if(mounted)setFailed(true);});
     return()=>{mounted=false;stop();window.removeEventListener('hadijam:session-identity-changed',reset);};
   },[]);
-  if(failed)return <main role="alert" style={{padding:32}}>We could not restore your session. Check your connection and <button onClick={()=>window.location.reload()}>try again</button>.</main>;
+  if(failed && protectedPage)return <main role="alert" style={{padding:32}}>We could not restore your session. Check your connection and <button onClick={()=>window.location.reload()}>try again</button>.</main>;
   if(!ready && protectedPage)return <main role="status" style={{padding:32}}>Loading HaDiJaM…</main>;
   return <Fragment key={identity}>{children}</Fragment>;
 }
