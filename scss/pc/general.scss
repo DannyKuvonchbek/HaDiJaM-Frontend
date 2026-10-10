@@ -290,10 +290,14 @@
 }
 .footer-main {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1.2fr 1.15fr;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.15fr);
   gap: 45px;
   padding-top: 55px;
   padding-bottom: 45px;
+}
+.footer-main > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .footer-brand-lockup {
   display: inline-flex;
@@ -334,6 +338,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   color: #766f63;
   font-size: 8px;

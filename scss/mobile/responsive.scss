@@ -10,6 +10,7 @@
 }
 @media (min-width: 761px) and (max-width: 1299px) {
   .shell, .section-shell { width: calc(100% - 48px); }
+  .hero-assurances { width: calc(100% - 48px); }
   .header-main { grid-template-columns: auto 1fr auto; gap: 16px; }
   .desktop-nav { gap: 12px; flex-wrap: wrap; justify-content: center; }
   .desktop-nav a { font-size: 12px; }
@@ -28,9 +29,13 @@
   .service-closing > img { width: 190px; height: 190px; }
   .admin-console-toolbar { flex-wrap: wrap; }
 }
+@media (min-width: 761px) and (max-width: 1000px) {
+  .footer-main { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+}
 @media (max-width: 760px) {
   html { scroll-padding-top: 90px; }
   .site-layout img { max-width: 100%; }
+  .hero-assurances { width: calc(100% - 36px); }
   .site-layout input, .site-layout select, .site-layout textarea,
   .checkout-page input, .checkout-page select, .checkout-page textarea,
   .seller-console input, .seller-console select, .seller-console textarea { font-size: 16px; max-width: 100%; }
@@ -157,7 +162,7 @@
 }
 
 @media (max-width: 760px) {
-  .ai-concierge-launcher { right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); min-height: 48px; padding: 0 16px; }
+  .ai-concierge-launcher { right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); width: 48px; height: 48px; min-height: 48px; padding: 0; }
   .ai-concierge-scrim { padding: 12px; }
   .ai-concierge-panel { width: 100%; height: calc(100dvh - 24px); min-width: 0; }
   .ai-concierge-header { padding: 14px; gap: 8px; }
