@@ -14,7 +14,7 @@ The frontend runs on port `1017`; its GraphQL API and uploaded media default to 
 
 Product and order prices are shown and entered in USD. The backend still stores numeric prices in UZS, so seller-entered USD amounts are converted using the latest USD rate from the Central Bank of Uzbekistan JSON feed; the app uses a documented fallback rate if that feed is unavailable.
 
-Google and Facebook buttons on `/sign-in` redirect to `NEXT_PUBLIC_GOOGLE_OAUTH_URL` and `NEXT_PUBLIC_FACEBOOK_OAUTH_URL` when configured. The current NestJS backend does not expose provider OAuth endpoints, so these URLs must point to OAuth routes added to the authentication service before social sign-in can complete.
+Google and Facebook sign-in use backend authorization-code callbacks. Configure provider IDs and secrets only in the backend environment; callback URLs and the required environment variables are documented in `../Hadijam   backend/docs/OAUTH_SETUP.md`. Never place provider secrets in frontend environment variables.
 
 ## Structure
 

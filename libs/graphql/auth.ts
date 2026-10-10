@@ -5,6 +5,7 @@ export const LOGIN = gql`
     login(input: $input) {
       _id
       memberNick
+      memberFullName
       memberType
       accessToken
     }
@@ -16,6 +17,7 @@ export const SIGNUP = gql`
     signup(input: $input) {
       _id
       memberNick
+      memberFullName
       memberType
       accessToken
     }

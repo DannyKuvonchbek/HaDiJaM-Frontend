@@ -14,12 +14,7 @@ import {
 import { LOGIN, SIGNUP } from "@/libs/graphql/auth";
 
 type AccountType = "USER" | "SELLER";
-type SocialProvider = "Google" | "Facebook";
-
-const socialAuthUrls: Record<SocialProvider, string | undefined> = {
-  Google: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_URL,
-  Facebook: process.env.NEXT_PUBLIC_FACEBOOK_OAUTH_URL,
-};
+type SocialProvider = "google" | "facebook";
 
 function GoogleMark() {
   return (
@@ -68,7 +63,17 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (router.isReady && router.query.mode === "signin") setRegister(false);
-  }, [router.isReady, router.query.mode]);
+    if (router.isReady && typeof router.query.oauth_error === "string") {
+      const messages: Record<string, string> = {
+        provider_not_configured: "This sign-in provider is not configured yet.",
+        provider_cancelled: "Sign-in was cancelled. You can try again.",
+        invalid_callback: "The sign-in response was incomplete. Please try again.",
+        invalid_state: "The sign-in session expired. Please try again.",
+        provider_verification_failed: "The provider could not verify your account. Please try again.",
+      };
+      setError(messages[router.query.oauth_error] ?? "Social sign-in could not be completed.");
+    }
+  }, [router.isReady, router.query.mode, router.query.oauth_error]);
 
   const returnPath = () => {
     const next = router.query.next;
@@ -96,6 +101,7 @@ export default function SignInPage() {
             variables: {
               input: {
                 ...input,
+                memberFullName: input.memberNick,
                 memberPhone: String(form.get("memberPhone") ?? "").trim(),
                 memberType: accountType,
                 sellerIntent: accountType === "SELLER",
@@ -165,15 +171,10 @@ export default function SignInPage() {
   };
 
   const startSocialAuth = (provider: SocialProvider) => {
-    const authUrl = socialAuthUrls[provider];
-    if (!authUrl) {
-      setError(
-        `${provider} orqali kirish hozircha ulanmagan. Backend OAuth endpointi va provider sozlamalari kerak.`,
-      );
-      return;
-    }
-    const destination = new URL(authUrl, window.location.origin);
+    const apiBase = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002").replace(/\/$/, "");
+    const destination = new URL(`${apiBase}/auth/oauth/${provider}`);
     destination.searchParams.set("next", returnPath());
+    if (register && accountType === "SELLER") destination.searchParams.set("seller", "1");
     window.location.assign(destination.toString());
   };
 
@@ -328,14 +329,14 @@ export default function SignInPage() {
           <form className="auth-form" onSubmit={submit}>
             {register && (
               <label>
-                <span className="auth-field-caption">USERNAME</span>
+                <span className="auth-field-caption">FULL NAME OR DISPLAY NAME</span>
                 <input
                   name="memberNick"
                   minLength={3}
-                  maxLength={12}
-                  autoComplete="username"
+                  maxLength={100}
+                  autoComplete="name"
                   required
-                  placeholder="Choose a username"
+                  placeholder="Enter your full name or preferred name"
                 />
               </label>
             )}
@@ -355,14 +356,14 @@ export default function SignInPage() {
             )}
             {!register && (
               <label className="auth-username">
-                <span className="auth-field-caption">USERNAME</span>
+                <span className="auth-field-caption">USERNAME OR FULL NAME</span>
                 <input
                   name="memberNick"
                   minLength={3}
-                  maxLength={12}
+                  maxLength={100}
                   autoComplete="username"
                   required
-                  placeholder="Your username"
+                  placeholder="Your username or full name"
                 />
               </label>
             )}
@@ -455,10 +456,10 @@ export default function SignInPage() {
             <span>OR CONTINUE WITH / YOKI ORQALI</span>
           </div>
           <div className="auth-socials">
-            <button type="button" onClick={() => startSocialAuth("Google")}>
+            <button type="button" onClick={() => startSocialAuth("google")}>
               <GoogleMark /> Google Account
             </button>
-            <button type="button" onClick={() => startSocialAuth("Facebook")}>
+            <button type="button" onClick={() => startSocialAuth("facebook")}>
               <FacebookMark /> Facebook
             </button>
           </div>
