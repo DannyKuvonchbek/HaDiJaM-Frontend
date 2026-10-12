@@ -63,6 +63,31 @@ const collectionTitles: Partial<Record<ProductCategory, string[]>> = {
 	],
 };
 
+export function findGeneratedTitleSearch(
+	query: string,
+	activeCategory: ProductCategory | 'all',
+): { productType: ProductCategory; number: string } | undefined {
+	const normalize = (value: string) => value
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLowerCase()
+		.replace(/\s+/g, ' ')
+		.trim();
+	const needle = normalize(query);
+	if (needle.length < 3) return undefined;
+
+	const matches = Object.entries(collectionTitles).flatMap(([category, titles]) => {
+		if (activeCategory !== 'all' && category !== activeCategory) return [];
+		return (titles ?? []).flatMap((title, index) =>
+			normalize(title).includes(needle)
+				? [{ productType: category as ProductCategory, number: String(index + 1).padStart(2, '0') }]
+				: [],
+		);
+	});
+
+	return matches.length === 1 ? matches[0] : undefined;
+}
+
 /** Replace only the generic HaDiJaM + No. ## seed titles with distinctive catalog names. */
 export function getProductDisplayTitle(
 	category: ProductCategory | string,

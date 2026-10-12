@@ -9,7 +9,7 @@ import SiteLayout from '@/libs/components/layout/SiteLayout';
 import ProductCard from '@/libs/components/catalog/ProductCard';
 import { featuredProducts } from '@/libs/data/catalog';
 import { getProductImage } from '@/libs/data/productImages';
-import { getProductDisplayTitle } from '@/libs/data/productTitles';
+import { findGeneratedTitleSearch, getProductDisplayTitle } from '@/libs/data/productTitles';
 import { usdToUzs } from '@/libs/utils/currency';
 import { useUsdUzsRate } from '@/libs/utils/CurrencyProvider';
 import { GET_PRODUCTS } from '@/libs/graphql/products';
@@ -100,6 +100,10 @@ export default function CatalogPage() {
 		const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 300);
 		return () => window.clearTimeout(timer);
 	}, [filters.search]);
+	const generatedTitleSearch = useMemo(
+		() => findGeneratedTitleSearch(debouncedSearch, activeCategory),
+		[activeCategory, debouncedSearch],
+	);
 
 	const productQueryVariables = useMemo(() => ({
 		input: {
@@ -114,14 +118,16 @@ export default function CatalogPage() {
 					...(filters.minPrice !== '' ? { minPrice: usdToUzs(filters.minPrice, usdUzsRate) } : {}),
 					...(filters.maxPrice !== '' ? { maxPrice: usdToUzs(filters.maxPrice, usdUzsRate) } : {}),
 				} : {}),
-				...(activeCategory !== 'all' ? { productType: activeCategory } : {}),
-				...(debouncedSearch ? { text: debouncedSearch } : {}),
+				...((activeCategory !== 'all' || generatedTitleSearch) ? {
+					productType: generatedTitleSearch?.productType ?? activeCategory,
+				} : {}),
+				...(debouncedSearch ? { text: generatedTitleSearch?.number ?? debouncedSearch } : {}),
 				...(filters.metals.length ? { metals: filters.metals.flatMap((metal) => metalSearchValues[metal] ?? [metal]) } : {}),
 				...(filters.gemstone ? { gemstone: filters.gemstone } : {}),
 				...(filters.certifications.length ? { certifications: filters.certifications } : {}),
 			},
 		},
-	}), [activeCategory, currentPage, debouncedSearch, filters.certifications, filters.gemstone, filters.maxPrice, filters.metals, sellerId, sort, usdUzsRate]);
+	}), [activeCategory, currentPage, debouncedSearch, filters.certifications, filters.gemstone, filters.maxPrice, filters.metals, generatedTitleSearch, sellerId, sort, usdUzsRate]);
 	const { data, loading: queryLoading, error: queryError, refetch } = useQuery(GET_PRODUCTS, {
 		variables: productQueryVariables,
 		fetchPolicy: 'network-only',
@@ -191,7 +197,7 @@ export default function CatalogPage() {
 
 				<div className="marketplace-results">
 					<div className="marketplace-results-toolbar"><div className="marketplace-results-summary"><strong>{isLoading ? t('Loading Collection…') : `${t('Showing')} ${totalProducts} ${t('Curated Creations')}`}</strong><span>{isLoading ? t('Please wait') : t('Live Catalogue')}</span></div><div className="marketplace-results-controls"><label>{t('Sort by')}<select value={sort} onChange={(event) => { setSort(event.target.value); setCurrentPage(1); }}><option value="featured">{t('Curated & Featured')}</option><option value="price-high">{t('Price: High to Low')}</option><option value="price-low">{t('Price: Low to High')}</option></select><KeyboardArrowDownRoundedIcon /></label><div className="marketplace-grid-toggle"><button type="button" aria-label="Two column view" aria-pressed={columns === 2} className={columns === 2 ? 'active' : ''} onClick={() => setColumns(2)}><span className="material-symbols-outlined">grid_view</span></button><button type="button" aria-label="Three column view" aria-pressed={columns === 3} className={columns === 3 ? 'active' : ''} onClick={() => setColumns(3)}><span className="material-symbols-outlined">view_column</span></button></div></div></div>
-					{isLoading ? <div className="marketplace-empty" role="status"><span className="material-symbols-outlined">hourglass_top</span><h2>{t('Loading collection')}</h2><p>{t('Finding matching pieces across the full catalogue.')}</p></div> : queryError ? <div className="marketplace-empty" role="alert"><span className="material-symbols-outlined">cloud_off</span><h2>{t('Catalogue unavailable')}</h2><p>{t('We could not load the full collection. Please try again.')}</p><button type="button" onClick={() => { setCurrentPage(1); void refetch(); }}>{t('Try again')}</button></div> : !totalProducts ? <div className="marketplace-empty"><span className="material-symbols-outlined">search_off</span><h2>{t('No pieces found')}</h2><p>{filters.metals.length ? `No products are currently available for ${filters.metals.join(' or ')}. Try another alloy or clear the filters.` : t('Change your search or clear filters to see more of the collection.')}</p><button type="button" onClick={resetFilters}>{t('Clear filters')}</button></div> : <div className={`product-grid marketplace-products columns-${columns}`}>{products.map((product) => <ProductCard key={product.id} product={product} marketplace />)}</div>}
+					{isLoading ? <div className="marketplace-empty" role="status"><span className="material-symbols-outlined">hourglass_top</span><h2>{t('Loading collection')}</h2><p>{t('Finding matching pieces across the full catalogue.')}</p></div> : queryError ? <div className="marketplace-empty" role="alert"><span className="material-symbols-outlined">cloud_off</span><h2>{t('Catalogue unavailable')}</h2><p>{t('We could not load the full collection. Please try again.')}</p><button type="button" onClick={() => { setCurrentPage(1); void refetch(); }}>{t('Try again')}</button></div> : !totalProducts ? <div className="marketplace-empty"><span className="material-symbols-outlined">search_off</span><h2>{t('No pieces found')}</h2><p>{filters.metals.length || filters.gemstone || filters.certifications.length ? 'These filters search the specifications saved in each product listing. No active listing currently matches the selected purity, gemstone, or certification. Ask the seller to add verified details, or clear the filters.' : t('Change your search or clear filters to see more of the collection.')}</p><button type="button" onClick={resetFilters}>{t('Clear filters')}</button></div> : <div className={`product-grid marketplace-products columns-${columns}`}>{products.map((product) => <ProductCard key={product.id} product={product} marketplace />)}</div>}
 					{!isLoading && !queryError && totalProducts > 0 && <nav className="marketplace-pagination" aria-label="Marketplace pages"><span>Showing {(currentPage - 1) * CATALOG_PAGE_SIZE + 1}–{Math.min(currentPage * CATALOG_PAGE_SIZE, totalProducts)} of {totalProducts} verified pieces · Page {currentPage} of {pageCount}</span><div><button type="button" disabled={currentPage === 1} aria-label="Previous page" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}>‹</button>{pageWindowStart > 1 && <><button type="button" aria-label="Page 1" onClick={() => setCurrentPage(1)}>1</button><span className="marketplace-page-ellipsis">…</span></>}{visiblePages.map((page) => <button type="button" key={page} className={currentPage === page ? 'current' : ''} aria-label={`Page ${page}`} aria-current={currentPage === page ? 'page' : undefined} onClick={() => setCurrentPage(page)}>{page}</button>)}{pageWindowStart + visiblePages.length - 1 < pageCount && <><span className="marketplace-page-ellipsis">…</span><button type="button" aria-label={`Page ${pageCount}`} onClick={() => setCurrentPage(pageCount)}>{pageCount}</button></>}<button type="button" disabled={currentPage >= pageCount} aria-label="Next page" onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))}>›</button></div></nav>}
 				</div>
 			</section>
