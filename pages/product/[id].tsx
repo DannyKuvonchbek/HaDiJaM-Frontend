@@ -20,11 +20,12 @@ export default function ProductPage() {
   const usdUzsRate = useUsdUzsRate();
   const router = useRouter();
   const id = typeof router.query.id === "string" ? router.query.id : "";
+  const isDatabaseProduct = /^[a-f\d]{24}$/i.test(id);
   const product =
     featuredProducts.find((item) => item.id === id) ?? featuredProducts[0];
-  const { data } = useQuery(GET_PRODUCT, {
+  const { data, loading, error } = useQuery(GET_PRODUCT, {
     variables: { productId: id },
-    skip: !id || !/^[a-f\d]{24}$/i.test(id),
+    skip: !router.isReady || !isDatabaseProduct,
   });
   const [activeImage, setActiveImage] = useState(product.image);
   const [added, setAdded] = useState(false);
@@ -64,6 +65,44 @@ export default function ProductPage() {
     });
     setAdded(true);
   };
+
+  if (!router.isReady || (isDatabaseProduct && loading)) {
+    return (
+      <SiteLayout title="Loading piece | HaDiJaM">
+        <section className="product-detail section-shell" aria-busy="true" aria-live="polite">
+          <div className="breadcrumbs detail-loading-line" />
+          <div className="detail-grid">
+            <div className="detail-gallery">
+              <div className="detail-main-image detail-loading-image" />
+              <div className="detail-thumbnails">
+                {[0, 1, 2].map((item) => <span className="detail-loading-thumb" key={item} />)}
+              </div>
+            </div>
+            <div className="detail-copy detail-loading-copy">
+              <span className="detail-loading-line short" />
+              <span className="detail-loading-line title" />
+              <span className="detail-loading-line" />
+              <span className="detail-loading-line medium" />
+              <span className="detail-loading-panel" />
+            </div>
+          </div>
+          <p className="detail-loading-message">Loading product details and photos…</p>
+        </section>
+      </SiteLayout>
+    );
+  }
+
+  if (isDatabaseProduct && (error || !remote)) {
+    return (
+      <SiteLayout title="Piece unavailable | HaDiJaM">
+        <section className="product-detail section-shell detail-unavailable" role="status">
+          <h1>This piece is unavailable</h1>
+          <p>We could not load this product from the collection. Please return to the catalog and try another piece.</p>
+          <a className="button button-gold" href="/catalog">Return to collection ↗</a>
+        </section>
+      </SiteLayout>
+    );
+  }
 
   return (
     <SiteLayout title={`${shownProduct.title} | HaDiJaM`}>

@@ -29,6 +29,86 @@
   height: 100%;
   object-fit: cover;
 }
+.detail-loading-image,
+.detail-loading-thumb,
+.detail-loading-line,
+.detail-loading-panel {
+  position: relative;
+  overflow: hidden;
+  background: #211f1b;
+}
+.detail-loading-image::after,
+.detail-loading-thumb::after,
+.detail-loading-line::after,
+.detail-loading-panel::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+  animation: detail-loading-shimmer 1.35s ease-in-out infinite;
+}
+.detail-loading-image {
+  border-color: rgba(212, 175, 55, 0.12);
+}
+.detail-loading-thumb {
+  display: block;
+  height: 78px;
+  flex: 0 0 76px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.detail-loading-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+.detail-loading-line {
+  display: block;
+  width: 76%;
+  height: 13px;
+  border-radius: 4px;
+}
+.breadcrumbs.detail-loading-line {
+  width: 190px;
+  height: 10px;
+  margin-bottom: 24px;
+}
+.detail-loading-line.short { width: 34%; height: 10px; }
+.detail-loading-line.title { width: 90%; height: 48px; margin: 6px 0; }
+.detail-loading-line.medium { width: 54%; }
+.detail-loading-panel {
+  width: 100%;
+  height: 115px;
+  margin-top: 12px;
+  border-radius: 6px;
+}
+.detail-loading-message {
+  margin: 18px 0 0;
+  color: #aaa397;
+  font-size: 13px;
+  text-align: center;
+}
+.detail-unavailable {
+  min-height: 48vh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.detail-unavailable h1,
+.detail-unavailable p { margin: 0; }
+.detail-unavailable p { color: #aaa397; }
+@keyframes detail-loading-shimmer {
+  to { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .detail-loading-image::after,
+  .detail-loading-thumb::after,
+  .detail-loading-line::after,
+  .detail-loading-panel::after { animation: none; }
+}
 .detail-main-image.chain-detail-image,
 .detail-main-image.ring-detail-image {
   width: min(100%, 510px);
