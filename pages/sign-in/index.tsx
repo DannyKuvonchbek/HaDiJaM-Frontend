@@ -12,6 +12,8 @@ import {
   clearSellerDraft,
 } from "@/libs/graphql/sellerApproval";
 import { LOGIN, SIGNUP } from "@/libs/graphql/auth";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 type AccountType = "USER" | "SELLER";
 type SocialProvider = "google" | "facebook";
@@ -57,6 +59,7 @@ export default function SignInPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [login] = useMutation(LOGIN);
   const [signup] = useMutation(SIGNUP);
   const [submitApplication] = useMutation(SUBMIT_APPLICATION);
@@ -127,15 +130,12 @@ export default function SignInPage() {
         };
         saveSellerDraft(draft);
         try {
-          draft.idDocumentId = await uploadSellerDocument(
-            form.get("idDocument") as File,
-          );
+          const idFile = form.get("idDocument") as File;
+          const businessFile = form.get("businessDocument") as File;
+          if (idFile?.size) draft.idDocumentId = await uploadSellerDocument(idFile);
+          if (businessFile?.size) draft.businessDocumentId = await uploadSellerDocument(businessFile);
           saveSellerDraft(draft);
-          draft.businessDocumentId = await uploadSellerDocument(
-            form.get("businessDocument") as File,
-          );
-          saveSellerDraft(draft);
-          await submitApplication({ variables: { input: draft } });
+          await submitApplication({ variables: { input: {...draft, idDocumentId: draft.idDocumentId || null, businessDocumentId: draft.businessDocumentId || null} } });
           clearSellerDraft();
           window.alert(
             "Please wait. Your seller application is being reviewed by our administrator. We will notify you as soon as a decision is made.",
@@ -171,7 +171,7 @@ export default function SignInPage() {
   };
 
   const startSocialAuth = (provider: SocialProvider) => {
-    const apiBase = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002").replace(/\/$/, "");
+    const apiBase = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:1997").replace(/\/$/, "");
     const destination = new URL(`${apiBase}/auth/oauth/${provider}`);
     destination.searchParams.set("next", returnPath());
     if (register && accountType === "SELLER") destination.searchParams.set("seller", "1");
@@ -369,15 +369,26 @@ export default function SignInPage() {
             )}
             <label className="auth-password">
               <span className="auth-field-caption">PASSWORD</span>
-              <input
-                name="memberPassword"
-                type="password"
-                autoComplete={register ? "new-password" : "current-password"}
-                minLength={5}
-                maxLength={72}
-                required
-                placeholder="Enter your password"
-              />
+              <div className="auth-password-control">
+                <input
+                  name="memberPassword"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete={register ? "new-password" : "current-password"}
+                  minLength={5}
+                  maxLength={72}
+                  required
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  className="auth-password-toggle"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword((visible) => !visible)}
+                >
+                  {showPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
+                </button>
+              </div>
             </label>
             {register && accountType === "SELLER" && (
               <>
@@ -400,26 +411,23 @@ export default function SignInPage() {
                   />
                 </label>
                 <label>
-                  ID document (PDF, JPG or PNG, up to 10 MB)
+                  ID document (optional · PDF, JPG or PNG, up to 10 MB)
                   <input
                     name="idDocument"
                     type="file"
                     accept="application/pdf,image/jpeg,image/png"
-                    required
                   />
                 </label>
                 <label>
-                  Business registration document (PDF, JPG or PNG, up to 10 MB)
+                  Business registration document (optional · PDF, JPG or PNG, up to 10 MB)
                   <input
                     name="businessDocument"
                     type="file"
                     accept="application/pdf,image/jpeg,image/png"
-                    required
                   />
                 </label>
                 <p>
-                  Your documents are private. Seller privileges are enabled only
-                  after administrator approval.
+                  Document upload is optional. Your seller account will be activated automatically after a short review.
                 </p>
               </>
             )}

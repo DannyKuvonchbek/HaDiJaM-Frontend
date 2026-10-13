@@ -6,13 +6,14 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import SiteLayout from "@/libs/components/layout/SiteLayout";
 import AtelierChatPanel from "@/libs/components/ateliers/AtelierChatPanel";
 import { getAtelier } from "@/libs/data/ateliers";
-import { GET_ATELIER_OWNER, GET_ATELIER_PRODUCTS, GET_ATELIER_SERVICES, GET_ATELIER_SOCIAL, SET_ATELIER_LIKE, SET_ATELIER_FOLLOW, GET_ATELIER_SCHEDULES, GET_ATELIER_REVIEWS, CREATE_ATELIER_REVIEW } from "@/libs/graphql/ateliers";
+import { GET_ATELIER_OWNER, GET_ATELIER_PRODUCTS, GET_ATELIER_SERVICES, GET_ATELIER_SOCIAL, SET_ATELIER_LIKE, SET_ATELIER_FOLLOW, GET_ATELIER_BUSINESS_HOURS, GET_ATELIER_REVIEWS, CREATE_ATELIER_REVIEW } from "@/libs/graphql/ateliers";
 import { CREATE_SERVICE_BOOKING, GET_UNAVAILABLE_SERVICE_BOOKING_SLOTS } from "@/libs/graphql/services";
 import { GET_MY_SERVICE_BOOKINGS, GET_MEMBER_PROFILE } from "@/libs/graphql/myPage";
 import { readMemberId } from "@/libs/utils/account";
 import { uploadGraphqlFiles } from "@/libs/utils/uploadGraphqlFiles";
+import { atelierHoursLabel } from "@/libs/utils/atelierHours";
 
-const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002";
+const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:1997";
 const asset = (value?: string) => !value ? "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-licensed-gia-certified-gemologist-utilizing-an-electronic-refractometer--091.jpg" : /^(https?:|data:|\/)/.test(value) ? value : `${apiBase}/${value}`;
 const kstToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 const dateTimeAtKst = (date: string, time: string) => new Date(`${date}T${time}:00+09:00`).toISOString();
@@ -77,8 +78,8 @@ export default function AtelierExperience({ slug }: { slug: string }) {
   const [followed, setFollowed] = useState(false);
   const [followCount, setFollowCount] = useState(0);
   const [likeCount, setLikeCount] = useState(0);
-  const { data: ownerData, loading: ownerLoading, error: ownerError } = useQuery(GET_ATELIER_OWNER, { variables: { input: { page: 1, limit: 10, search: { text: "DANNY" } } }, fetchPolicy: "network-only" });
-  const owner = ownerData?.getSellers?.list?.find((candidate: any) => candidate.memberNick?.toLowerCase() === "danny");
+  const { data: ownerData, loading: ownerLoading, error: ownerError } = useQuery(GET_ATELIER_OWNER, { variables: { input: { page: 1, limit: 10, search: { text: "Martin" } } }, fetchPolicy: "network-only" });
+  const owner = ownerData?.getSellers?.list?.find((candidate: any) => candidate.memberNick?.toLowerCase() === "martin");
   const { data: profileData } = useQuery(GET_MEMBER_PROFILE, { variables: { memberId }, skip: !memberId, fetchPolicy: "network-only" });
   const member = profileData?.getMember;
   const servicesQuery = useQuery(GET_ATELIER_SERVICES, { variables: { input: { page: 1, limit: 60, sort: "createdAt", direction: "DESC", search: { memberId: owner?._id } } }, skip: !owner?._id, fetchPolicy: "network-only" });
@@ -87,7 +88,7 @@ export default function AtelierExperience({ slug }: { slug: string }) {
   const products = productQuery.data?.getProducts?.list ?? [];
   const { data: bookingData } = useQuery(GET_MY_SERVICE_BOOKINGS, { variables: { input: { page: 1, limit: 100 } }, skip: !memberId, fetchPolicy: "network-only" });
   const bookings = bookingData?.getMyServiceBookings?.list ?? [];
-  const scheduleQuery = useQuery(GET_ATELIER_SCHEDULES, { variables: { serviceId: booking?.service?._id ?? "" }, skip: !booking?.service?._id, fetchPolicy: "network-only" });
+  const scheduleQuery = useQuery(GET_ATELIER_BUSINESS_HOURS, { fetchPolicy: "cache-and-network" });
   const { data: unavailableData, loading: slotsLoading } = useQuery(GET_UNAVAILABLE_SERVICE_BOOKING_SLOTS, { variables: { input: { serviceId: booking?.service?._id ?? "", date: bookingDate, technician: booking?.definition?.technician ?? "" } }, skip: !booking?.service?._id || !bookingDate || !booking?.definition?.technician });
   const [createServiceBooking, { loading: bookingLoading }] = useMutation(CREATE_SERVICE_BOOKING);
   const [socialError, setSocialError] = useState("");
@@ -95,8 +96,9 @@ export default function AtelierExperience({ slug }: { slug: string }) {
   const [setLike, { loading: liking }] = useMutation(SET_ATELIER_LIKE);
   const [setFollow, { loading: followingAction }] = useMutation(SET_ATELIER_FOLLOW);
   const unavailable = unavailableData?.getUnavailableServiceBookingSlots ?? [];
-  const scheduleDays = scheduleQuery.data?.getServiceSchedules?.list ?? [];
-  const dateIsScheduled = scheduleDays.some((schedule: any) => schedule.isWorking && schedule.dayOfWeek.toLowerCase() === weekdayAtKst(bookingDate).toLowerCase());
+  const businessHours = scheduleQuery.data?.getAtelierBusinessHours;
+  const businessHoursLabel = atelierHoursLabel(businessHours);
+  const dateIsScheduled = Boolean(businessHours?.daysOfWeek?.includes(weekdayAtKst(bookingDate)));
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -152,7 +154,7 @@ export default function AtelierExperience({ slug }: { slug: string }) {
       </section>
       {(ownerLoading || ownerError || !owner) && <p className={`atelier-state ${ownerError ? "error" : ""}`} role="status">{ownerLoading ? "Loading the atelier profile…" : ownerError ? "The atelier profile could not be loaded." : "The linked seller account is not available."}</p>}
       {(socialError || socialQuery.error) && <p className="atelier-state error" role="alert">{socialError || socialQuery.error?.message}</p>}
-      <div className="atelier-trust-row"><div><b>{likeCount}</b><span>Verified reactions</span></div><div><b>{followCount}</b><span>Patron followers</span></div><div><b>{productQuery.data?.getProducts?.metaCounter?.[0]?.total ?? products.length}</b><span>Live catalog pieces</span></div><div><b>09:00–20:00</b><span>Private chat · KST weekdays</span></div></div>
+      <div className="atelier-trust-row"><div><b>{likeCount}</b><span>Verified reactions</span></div><div><b>{followCount}</b><span>Patron followers</span></div><div><b>{productQuery.data?.getProducts?.metaCounter?.[0]?.total ?? products.length}</b><span>Live catalog pieces</span></div><div><b>24/7</b><span>Private chat · Any time</span></div></div>
 
       <div className="atelier-main-grid">
         <div className="atelier-primary-column">
@@ -170,9 +172,9 @@ export default function AtelierExperience({ slug }: { slug: string }) {
             {services.map((service: any) => <AtelierReviewFeed key={service._id} service={service} bookings={bookings} isSignedIn={signedIn} />)}
           </section>
         </div>
-        <aside className="atelier-side-column"><div id="atelier-chat"><AtelierChatPanel atelier={atelier} memberId={memberId} ownerId={owner?._id} /></div><section className="atelier-location-card"><span className="atelier-eyebrow">SEOUL PRIVATE ATELIER</span><h3>{atelier.name}</h3><p>{atelier.address}</p><p className="atelier-hours">{atelier.hours}</p><button type="button" className="atelier-button gold" onClick={() => services[0] && void openBooking(services[0])}>Reserve an appointment →</button><Link href="/contact">Contact concierge</Link></section></aside>
+        <aside className="atelier-side-column"><div id="atelier-chat"><AtelierChatPanel atelier={atelier} memberId={memberId} ownerId={owner?._id} /></div><section className="atelier-location-card"><span className="atelier-eyebrow">SEOUL PRIVATE ATELIER</span><h3>{atelier.name}</h3><p>{atelier.address}</p><p className="atelier-hours">{businessHoursLabel}</p><button type="button" className="atelier-button gold" onClick={() => services[0] && void openBooking(services[0])}>Reserve an appointment →</button><Link href="/contact">Contact concierge</Link></section></aside>
       </div>
     </div>
-    {booking && <div className="atelier-modal-backdrop" role="presentation" onClick={() => setBooking(null)}><form className="atelier-booking-modal" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()} onSubmit={submitBooking}><button type="button" className="atelier-modal-close" onClick={() => setBooking(null)} aria-label="Close">×</button><span className="atelier-eyebrow">SECURE ATELIER INTAKE · KST</span><h2>{booking.service.serviceTitle}</h2><p>${Number(booking.service.servicePrice).toFixed(2)} USD · {booking.service.serviceDuration} · {booking.definition.technician}</p><label>Preferred date<input type="date" required min={kstToday()} value={bookingDate} onChange={(event) => { setBookingDate(event.target.value); setBookingTime(""); }} /></label>{!scheduleQuery.loading && scheduleDays.length > 0 && !dateIsScheduled && <p className="atelier-form-error">This atelier is closed on the selected day. Please choose another date.</p>}<label>Available appointment time<select required value={bookingTime} onChange={(event) => setBookingTime(event.target.value)} disabled={slotsLoading || scheduleQuery.loading || !dateIsScheduled}><option value="">{slotsLoading || scheduleQuery.loading ? "Checking availability…" : !dateIsScheduled ? "Choose an open date first" : "Choose a time"}</option>{booking.definition.bookingSlots.filter((slot: string) => !unavailable.includes(slot)).map((slot: string) => <option key={slot} value={slot}>{slot} KST</option>)}</select></label>{!slotsLoading && dateIsScheduled && booking.definition.bookingSlots.every((slot: string) => unavailable.includes(slot)) && <p className="atelier-form-error">All listed times are reserved for this date. Choose another date.</p>}<label>Contact phone<input required value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="Your phone number" /></label><label>Address<input required value={address} onChange={(event) => setAddress(event.target.value)} placeholder="City and neighborhood" /></label><label>Appointment notes<textarea rows={3} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Tell the atelier what you would like to discuss." /></label>{bookingError && <p className="atelier-form-error" role="alert">{bookingError}</p>}<button className="atelier-button gold full" type="submit" disabled={bookingLoading || !bookingTime || !dateIsScheduled}>{bookingLoading ? "Saving appointment…" : "Confirm appointment"}</button><small>Appointment requests are saved to your account. Payment is not collected here.</small></form></div>}
+    {booking && <div className="atelier-modal-backdrop" role="presentation" onClick={() => setBooking(null)}><form className="atelier-booking-modal" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()} onSubmit={submitBooking}><button type="button" className="atelier-modal-close" onClick={() => setBooking(null)} aria-label="Close">×</button><span className="atelier-eyebrow">SECURE ATELIER INTAKE · KST</span><h2>{booking.service.serviceTitle}</h2><p>${Number(booking.service.servicePrice).toFixed(2)} USD · {booking.service.serviceDuration} · {booking.definition.technician}</p><label>Preferred date<input type="date" required min={kstToday()} value={bookingDate} onChange={(event) => { setBookingDate(event.target.value); setBookingTime(""); }} /></label>{!scheduleQuery.loading && businessHours && !dateIsScheduled && <p className="atelier-form-error">This atelier is closed on the selected day. Please choose another date.</p>}<label>Available appointment time<select required value={bookingTime} onChange={(event) => setBookingTime(event.target.value)} disabled={slotsLoading || scheduleQuery.loading || !dateIsScheduled}><option value="">{slotsLoading || scheduleQuery.loading ? "Checking availability…" : !dateIsScheduled ? "Choose an open date first" : "Choose a time"}</option>{booking.definition.bookingSlots.filter((slot: string) => !unavailable.includes(slot)).map((slot: string) => <option key={slot} value={slot}>{slot} KST</option>)}</select></label>{!slotsLoading && dateIsScheduled && booking.definition.bookingSlots.every((slot: string) => unavailable.includes(slot)) && <p className="atelier-form-error">All listed times are reserved for this date. Choose another date.</p>}<label>Contact phone<input required value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="Your phone number" /></label><label>Address<input required value={address} onChange={(event) => setAddress(event.target.value)} placeholder="City and neighborhood" /></label><label>Appointment notes<textarea rows={3} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Tell the atelier what you would like to discuss." /></label>{bookingError && <p className="atelier-form-error" role="alert">{bookingError}</p>}<button className="atelier-button gold full" type="submit" disabled={bookingLoading || !bookingTime || !dateIsScheduled}>{bookingLoading ? "Saving appointment…" : "Confirm appointment"}</button><small>Appointment requests are saved to your account. Payment is not collected here.</small></form></div>}
   </main></SiteLayout>;
 }

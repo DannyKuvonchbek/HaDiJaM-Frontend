@@ -54,7 +54,7 @@ async function uploadRepairPhoto(file: File, token: string) {
   body.append("operations", JSON.stringify({ query: "mutation UploadServicePhoto($file: Upload!, $target: String!) { imageUploader(file: $file, target: $target) }", variables: { file: null, target: "service-bookings" } }));
   body.append("map", JSON.stringify({ "0": ["variables.file"] }));
   body.append("0", file, file.name);
-  const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2002/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
+  const response = await authorizedFetch(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1997/graphql", { method: "POST", headers: { authorization: `Bearer ${token}`, "apollo-require-preflight": "true" }, body });
   const payload = await response.json();
   if (!response.ok || payload.errors?.length || typeof payload.data?.imageUploader !== "string") throw new Error(payload.errors?.[0]?.message ?? "Photo upload failed. Please try again.");
   return payload.data.imageUploader as string;

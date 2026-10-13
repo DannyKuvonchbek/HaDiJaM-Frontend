@@ -26,7 +26,7 @@ export default function OAuthCallbackPage() {
       return;
     }
 
-    const apiBase = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002").replace(/\/$/, "");
+    const apiBase = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:1997").replace(/\/$/, "");
     void fetch(`${apiBase}/auth/oauth/exchange`, {
       method: "POST",
       credentials: "include",

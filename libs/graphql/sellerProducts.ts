@@ -53,7 +53,7 @@ export async function uploadProductImages(
   files.forEach((file, index) => body.append(String(index), file, file.name));
 
   const response = await authorizedFetch(
-    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:2002/graphql",
+    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1997/graphql",
     {
       method: "POST",
       headers: {

@@ -133,10 +133,10 @@ export default function SellerApplications() {
                 </td>
                 <td>
                   <div className="admin-actions">
-                    <button onClick={() => setSelectedDocument({ id: a.idDocumentId, title: `${a.memberNick} — ID document` })}>
+                    <button disabled={!a.idDocumentId} onClick={() => setSelectedDocument({ id: a.idDocumentId, title: `${a.memberNick} — ID document` })}>
                       View ID document
                     </button>
-                    <button onClick={() => setSelectedDocument({ id: a.businessDocumentId, title: `${a.memberNick} — Business document` })}>
+                    <button disabled={!a.businessDocumentId} onClick={() => setSelectedDocument({ id: a.businessDocumentId, title: `${a.memberNick} — Business document` })}>
                       View business document
                     </button>
                   </div>

@@ -669,3 +669,9 @@
   .contact-socials a { justify-content: space-between; font-size: 11px; }
   .contact-call-button { width: 100%; min-height: 46px; margin-top: 18px; padding: 0 12px; font-size: 12px; }
 }
+
+@media (max-width: 760px) {
+  .notification-popover > header { padding: 16px; }
+  .notification-popover > header h2 { font-size: 21px; }
+  .notification-item { padding: 14px 15px; }
+}

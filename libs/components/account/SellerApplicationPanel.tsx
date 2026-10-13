@@ -22,7 +22,7 @@ export default function SellerApplicationPanel({
   const { data, loading, error, refetch } = useQuery(MY_APPLICATION, {
     skip: !sellerIntent || memberType !== "USER",
     fetchPolicy: "network-only",
-    pollInterval: 15000,
+    pollInterval: 1000,
     onCompleted: (result) => {
       if (
         result.getMySellerApplication?.status === "APPROVED" &&
@@ -91,9 +91,7 @@ export default function SellerApplicationPanel({
         setBusinessDocumentId(draft.businessDocumentId);
         saveSellerDraft(draft);
       }
-      if (!draft.idDocumentId || !draft.businessDocumentId)
-        throw new Error("Upload or select both documents.");
-      await submit({ variables: { input: draft } });
+      await submit({ variables: { input: {...draft, idDocumentId: draft.idDocumentId || null, businessDocumentId: draft.businessDocumentId || null} } });
       clearSellerDraft();
       await refetch();
       setNotice(
@@ -141,9 +139,7 @@ export default function SellerApplicationPanel({
       )}
       {application?.status === "PENDING" && (
         <p role="status">
-          Your documents have been submitted. Your account remains a regular
-          user account until an administrator approves your application. We
-          will send the decision to your Messages.
+          Your seller application is being processed. Your account will be activated automatically after a short review. We will notify you in Messages.
         </p>
       )}
       {memberType === "USER" &&
@@ -214,7 +210,7 @@ export default function SellerApplicationPanel({
               </>
             )}
             <label>
-              ID document (PDF, JPG or PNG, up to 10 MB)
+              ID document (optional · PDF, JPG or PNG, up to 10 MB)
               <input
                 name="idDocument"
                 type="file"
@@ -222,7 +218,7 @@ export default function SellerApplicationPanel({
               />
             </label>
             <label>
-              Business registration document (PDF, JPG or PNG, up to 10 MB)
+              Business registration document (optional · PDF, JPG or PNG, up to 10 MB)
               <input
                 name="businessDocument"
                 type="file"

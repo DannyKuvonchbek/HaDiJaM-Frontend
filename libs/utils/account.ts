@@ -1,5 +1,5 @@
 export const accountApiBase =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:1997";
 export const accountOrderSteps = [
   "Deposit",
   "Appraisal",

@@ -3,7 +3,7 @@ let token = '', member: SessionMember | null = null;
 let initialized = false, boot: Promise<void> | undefined, pending: Promise<string> | undefined;
 let channel: BroadcastChannel | undefined;
 let lastInteraction = 0, lastActivity = 0, stopping = false;
-const api = () => (process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:2002').replace(/\/$/, '');
+const api = () => (process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:1997').replace(/\/$/, '');
 const authKeys = ['accessToken', 'memberNick', 'memberType', 'memberImage', 'login', 'logout'];
 const emit = () => window.dispatchEvent(new Event('hadijam:auth-updated'));
 const changed = () => window.dispatchEvent(new Event('hadijam:token-updated'));

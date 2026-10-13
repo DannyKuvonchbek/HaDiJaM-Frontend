@@ -17,6 +17,7 @@ import { GET_MEMBER_PROFILE } from '@/libs/graphql/myPage';
 import { accountApiBase, readMemberId } from '@/libs/utils/account';
 import { useLocale, type Locale } from '@/libs/utils/LocaleProvider';
 import HeaderSearch from './HeaderSearch';
+import NotificationBell from '@/libs/components/notifications/NotificationBell';
 
 const links = [
 	['Collections', '/catalog'],
@@ -111,6 +112,7 @@ export default function SiteHeader() {
 						<MenuItem selected={locale === 'ru'} onClick={() => { setLocale('ru'); setLanguage(null); }}>Русский</MenuItem>
 					</Menu>
 					<IconButton aria-label={t('Search')} onClick={() => setSearchOpen(true)}><SearchRoundedIcon /></IconButton>
+					<NotificationBell enabled={isAuthenticated} memberId={memberId} />
 					{isAuthenticated && <IconButton component={Link} href="/my-page?tab=saved" aria-label="Saved pieces"><Badge badgeContent={0} color="primary"><FavoriteBorderRoundedIcon /></Badge></IconButton>}
 					{isAuthenticated && <IconButton aria-label="Shopping bag" component={Link} href="/cart"><Badge badgeContent={cartCount} color="primary"><ShoppingBagOutlinedIcon /></Badge></IconButton>}
 					{isAuthenticated ? <>

@@ -11,7 +11,7 @@ import { GET_ALL_MEMBERS_BY_ADMIN, GET_ALL_PRODUCTS_BY_ADMIN, REMOVE_PRODUCT_BY_
 import { readMemberId } from "@/libs/utils/account";
 
 const PAGE_SIZE = 20;
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:1997";
 const imageSrc = (path?: string) => path ? (/^(https?:)?\/\//.test(path) ? path : `${API_BASE.replace(/\/$/, "")}/${path.replace(/^\//, "")}`) : "";
 
 export default function AdminPage() {

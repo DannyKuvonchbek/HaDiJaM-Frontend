@@ -79,7 +79,7 @@ export const REQUEUE_SMS = gql`
   }
 `;
 const apiBase = () =>
-  (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:2002").replace(
+  (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:1997").replace(
     /\/$/,
     "",
   );

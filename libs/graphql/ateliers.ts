@@ -102,3 +102,9 @@ export const SET_ATELIER_FOLLOW = gql`
     setAtelierFollow(atelier: $atelier, followed: $followed) { atelier likes followers liked followed }
   }
 `;
+
+export const GET_ATELIER_BUSINESS_HOURS = gql`
+  query GetAtelierBusinessHours {
+    getAtelierBusinessHours { timeZone daysOfWeek opensAt closesAt }
+  }
+`;
