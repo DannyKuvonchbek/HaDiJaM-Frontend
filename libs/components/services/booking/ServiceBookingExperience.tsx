@@ -8,6 +8,7 @@ import SiteLayout from "@/libs/components/layout/SiteLayout";
 import { GET_MEMBER_PROFILE } from "@/libs/graphql/myPage";
 import { CREATE_SERVICE_BOOKING, GET_SERVICES, GET_UNAVAILABLE_SERVICE_BOOKING_SLOTS } from "@/libs/graphql/services";
 import { readMemberId } from "@/libs/utils/account";
+import { refreshMyNotifications } from "@/libs/components/notifications/notificationEvents";
 
 type Kind = "repair" | "ultrasonic";
 type Profile = { memberFullName?: string; memberPhone?: string; memberAddress?: string };
@@ -157,6 +158,7 @@ export default function ServiceBookingExperience({ kind }: { kind: Kind }) {
       } } });
       const booking = result.data?.createServiceBooking;
       if (!booking?.bookingReference) throw new Error("The server did not return a booking reference.");
+      refreshMyNotifications();
       setReceipt({ reference: booking.bookingReference, price: booking.bookingPrice });
       await availability.refetch();
     } catch (cause) {

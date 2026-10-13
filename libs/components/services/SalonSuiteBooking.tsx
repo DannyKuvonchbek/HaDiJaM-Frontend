@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { CREATE_SALON_RESERVATION } from "@/libs/graphql/services";
+import { refreshMyNotifications } from "@/libs/components/notifications/notificationEvents";
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -189,6 +190,7 @@ export default function SalonSuiteBooking({ open, onClose }: Props) {
         result.data?.createSalonReservation?.reservationReference;
       const saved = result.data?.createSalonReservation;
       if (!reference || !saved) throw new Error("Reservation was not confirmed by the server.");
+      refreshMyNotifications();
       setConfirmation({
         reference,
         status: saved.reservationStatus,

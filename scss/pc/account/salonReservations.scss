@@ -87,6 +87,7 @@
 .salon-reservation-receipt dt { color: #aaa293; font-size: 12px; }
 .salon-reservation-receipt dd { margin: 0; color: #eee8db; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 .salon-reservation-receipt dl > div:first-child dd { color: #edca4e; font-weight: 700; }
+.salon-reservation-receipt dl > div.reservation-reference dd { color: #aaa293; font-size: 12px; font-weight: 400; }
 .salon-reservation-saved {
   margin: 12px 0 0;
   color: #8f887c;

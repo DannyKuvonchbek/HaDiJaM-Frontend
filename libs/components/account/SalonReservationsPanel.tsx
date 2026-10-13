@@ -172,8 +172,8 @@ export default function SalonReservationsPanel() {
               <b className={`reservation-status ${reservation.reservationStatus.toLowerCase()}`}>{reservation.reservationStatus}</b>
             </div>
             <dl>
-              <div><dt>Booking Reference</dt><dd>{reservation.reservationReference}</dd></div>
-              <div><dt>Allocated Suite</dt><dd>{reservation.suiteName}</dd></div>
+              <div><dt>Room booked</dt><dd>{reservation.suiteName || "VIP suite"}</dd></div>
+              <div className="reservation-reference"><dt>Booking ID</dt><dd>{reservation.reservationReference}</dd></div>
               <div><dt>Date</dt><dd>{dateLabel(reservation.bookingDate, { month: "long", day: "numeric", year: "numeric" })}</dd></div>
               <div><dt>Time Block</dt><dd>{dateLabel(reservation.bookingTime, { hour: "2-digit", minute: "2-digit", hour12: false })} KST</dd></div>
               <div><dt>Guest</dt><dd>{reservation.guestName} · {reservation.guestContact}</dd></div>

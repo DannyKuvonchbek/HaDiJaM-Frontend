@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import SiteLayout from "@/libs/components/layout/SiteLayout";
 import { CREATE_SALON_RESERVATION, GET_BOOKED_SALON_TIMES } from "@/libs/graphql/services";
+import { refreshMyNotifications } from "@/libs/components/notifications/notificationEvents";
 
 type Workflow = "custom" | "appraisal" | "resizing";
 type Option = { title: string; detail: string; icon: string; color?: string };
@@ -183,6 +184,7 @@ export default function ServiceBookingWorkflow({ kind }: { kind: Workflow }) {
       } } });
       const saved = result.data?.createSalonReservation;
       if (!saved?.reservationReference) throw new Error("The server did not confirm this appointment.");
+      refreshMyNotifications();
       setConfirmation(saved.reservationReference);
       setFiles([]);
     } catch (cause) {

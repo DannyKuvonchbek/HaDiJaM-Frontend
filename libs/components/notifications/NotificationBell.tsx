@@ -4,6 +4,7 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import { useEffect, useRef, useState } from 'react';
 import { ensureAccessToken } from '@/libs/auth';
 import { GET_MY_NOTIFICATIONS, MARK_MY_NOTIFICATION_READ } from '@/libs/graphql/myPage';
+import { NOTIFICATIONS_REFRESH_EVENT } from './notificationEvents';
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:1997';
 const socketUrl = apiBase.replace(/^http/, 'ws').replace(/\/$/, '') + '/notifications';
@@ -14,7 +15,9 @@ export default function NotificationBell({ enabled, memberId }: Props) {
   const socketRef = useRef<WebSocket | null>(null);
   const { data, refetch } = useQuery(GET_MY_NOTIFICATIONS, {
     variables: { input: { page: 1, limit: 20 } }, skip: !enabled || !memberId,
-    fetchPolicy: 'network-only', pollInterval: enabled && memberId ? 60_000 : 0,
+    // WebSocket events and booking-success events refresh immediately; polling
+    // is a fallback for proxies that do not forward the notification socket.
+    fetchPolicy: 'network-only', pollInterval: enabled && memberId ? 5_000 : 0,
   });
   const [markRead] = useMutation(MARK_MY_NOTIFICATION_READ);
   const result = data?.getMyNotifications;
@@ -62,6 +65,13 @@ export default function NotificationBell({ enabled, memberId }: Props) {
       window.removeEventListener('hadijam:token-updated', refreshAuth); window.removeEventListener('hadijam:auth-updated', refreshAuth);
       socketRef.current?.close(); socketRef.current = null;
     };
+  }, [enabled, memberId, refetch]);
+
+  useEffect(() => {
+    if (!enabled || !memberId) return;
+    const refresh = () => { void refetch(); };
+    window.addEventListener(NOTIFICATIONS_REFRESH_EVENT, refresh);
+    return () => window.removeEventListener(NOTIFICATIONS_REFRESH_EVENT, refresh);
   }, [enabled, memberId, refetch]);
 
   if (!enabled || !memberId) return null;

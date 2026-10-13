@@ -12,6 +12,7 @@ import { GET_MY_SERVICE_BOOKINGS, GET_MEMBER_PROFILE } from "@/libs/graphql/myPa
 import { readMemberId } from "@/libs/utils/account";
 import { uploadGraphqlFiles } from "@/libs/utils/uploadGraphqlFiles";
 import { atelierHoursLabel } from "@/libs/utils/atelierHours";
+import { refreshMyNotifications } from "@/libs/components/notifications/notificationEvents";
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:1997";
 const asset = (value?: string) => !value ? "/images/stitch/services/hadijam-services-live-calculator-photo-uploaded-state-licensed-gia-certified-gemologist-utilizing-an-electronic-refractometer--091.jpg" : /^(https?:|data:|\/)/.test(value) ? value : `${apiBase}/${value}`;
@@ -141,7 +142,7 @@ export default function AtelierExperience({ slug }: { slug: string }) {
     setBookingError("");
     try {
       const result = await createServiceBooking({ variables: { input: { serviceId: booking.service._id, selectedTechnician: booking.definition.technician, bookingDate: dateTimeAtKst(bookingDate, "00:00"), bookingTime: dateTimeAtKst(bookingDate, bookingTime), customerName: member?.memberFullName || member?.memberNick || "HaDiJaM Client", customerPhone: phone.trim(), customerAddress: address.trim(), customerNote: note.trim() } } });
-      const created = result.data?.createServiceBooking; if (!created?.bookingReference) throw new Error("The server did not confirm the appointment."); setReceipt(created.bookingReference); setBooking(null); await router.push(`/my-page?tab=services&booking=${encodeURIComponent(created.bookingReference)}`);
+      const created = result.data?.createServiceBooking; if (!created?.bookingReference) throw new Error("The server did not confirm the appointment."); refreshMyNotifications(); setReceipt(created.bookingReference); setBooking(null); await router.push(`/my-page?tab=services&booking=${encodeURIComponent(created.bookingReference)}`);
     } catch (cause) { setBookingError(cause instanceof Error ? cause.message : "We could not reserve this appointment. Refresh availability and try again."); }
   };
 
