@@ -380,13 +380,23 @@
 .notification-popover > header b { color: #c8b982; font-size: 11px; font-weight: 500; }
 .notification-list { max-height: min(500px, calc(100vh - 210px)); overflow: auto; }
 .notification-item { display: flex; width: 100%; gap: 13px; padding: 16px 20px; color: inherit; text-align: left; background: transparent; border: 0; border-bottom: 1px solid rgba(255,255,255,.06); cursor: pointer; }
-.notification-item:hover, .notification-item.unread { background: rgba(212,175,55,.07); }
+.notification-item { align-items: flex-start; transition: background-color .18s ease, border-color .18s ease; }
+.notification-item:hover { background: rgba(255,255,255,.055); }
+.notification-item:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+.notification-item.unread { background: rgba(212,175,55,.11); }
+.notification-item.unread:hover { background: rgba(212,175,55,.17); }
+.notification-item.read { background: rgba(255,255,255,.015); }
+.notification-item.read strong { color: #c0b9ac; }
 .notification-mark { flex: 0 0 8px; width: 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: transparent; }
 .notification-item.unread .notification-mark { background: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,.35); }
-.notification-item > span:last-child { display: grid; gap: 6px; }
+.notification-item.read .notification-mark { background: #716b61; }
+.notification-copy { display: grid; flex: 1; min-width: 0; gap: 6px; }
 .notification-item strong { color: #f2ead8; font-size: 13px; }
 .notification-item small { color: #b5ada0; font-size: 12px; line-height: 1.5; }
 .notification-item time { color: #847c70; font-size: 10px; }
+.notification-status { flex: 0 0 auto; margin-left: auto; padding: 3px 6px; border: 1px solid rgba(255,255,255,.13); border-radius: 999px; color: #8d877c; font-size: 8px; font-weight: 700; letter-spacing: .08em; }
+.notification-item.unread .notification-status { border-color: rgba(212,175,55,.4); color: var(--gold); }
+.notification-item[aria-busy="true"] { cursor: progress; }
 .notification-empty { padding: 28px 22px; color: #aaa092; font-size: 13px; }
 
 .notification-popover-paper { background: #191817 !important; border: 1px solid rgba(212,175,55,.25); border-radius: 10px !important; }
