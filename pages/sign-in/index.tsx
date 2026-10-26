@@ -66,6 +66,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (router.isReady && router.query.mode === "signin") setRegister(false);
+    if (router.isReady && router.query.mode === "signup") setRegister(true);
     if (router.isReady && typeof router.query.oauth_error === "string") {
       const messages: Record<string, string> = {
         provider_not_configured: "This sign-in provider is not configured yet.",

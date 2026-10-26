@@ -10,15 +10,16 @@ export default function HomePartnerBanner() {
 	const [introVisible, setIntroVisible] = useState(true);
 
 	useEffect(() => {
+		let introTimer: ReturnType<typeof setTimeout> | undefined;
 		const startVideo = () => {
 			setVideoVisible(true);
 			void videoRef.current?.play().catch(() => undefined);
-			window.setTimeout(() => setIntroVisible(false), 1800);
+			introTimer = setTimeout(() => setIntroVisible(false), 1800);
 		};
 		const section = sectionRef.current;
 		if (!section || !('IntersectionObserver' in window)) {
 			startVideo();
-			return;
+			return () => clearTimeout(introTimer);
 		}
 		const observer = new IntersectionObserver(([entry]) => {
 			if (entry.isIntersecting) {
@@ -27,7 +28,7 @@ export default function HomePartnerBanner() {
 			}
 		}, { threshold: 0.25 });
 		observer.observe(section);
-		return () => observer.disconnect();
+		return () => { observer.disconnect(); clearTimeout(introTimer); };
 	}, []);
 
 	return <section ref={sectionRef} className="home-partner-banner home-cinematic-banner" aria-label="The HaDiJaM Seoul showroom">

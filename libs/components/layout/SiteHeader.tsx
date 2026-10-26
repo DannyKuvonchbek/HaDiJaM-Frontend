@@ -65,7 +65,7 @@ export default function SiteHeader() {
 		updateAuth(); window.addEventListener('hadijam:auth-updated', updateAuth); window.addEventListener('storage', updateAuth);
 		return () => {
 			window.removeEventListener('hadijam:cart-updated', updateCount); window.removeEventListener('storage', updateCount);
-			window.removeEventListener('hadijam:auth-updated', updateAuth);
+			window.removeEventListener('hadijam:auth-updated', updateAuth); window.removeEventListener('storage', updateAuth);
 		};
 	}, []);
 	useEffect(() => {
@@ -104,6 +104,7 @@ export default function SiteHeader() {
 					{navLinks.map(([label, href]) => <Link key={href} href={href} className={router.pathname === href ? 'active' : undefined} aria-current={router.pathname === href ? 'page' : undefined}>{t(label)}</Link>)}
 				</nav>
 				<div className="header-actions">
+                    {!isAuthenticated && <div className="mobile-auth-actions"><Link href="/sign-in?mode=signin">{t('Log in')}</Link><Link href="/sign-in?mode=signup" className="mobile-signup-link">{t('Sign up')}</Link></div>}
 					<button className="language-button" onClick={(event) => setLanguage(event.currentTarget)} aria-label={t('Language')}>{locale.toUpperCase()} <span>⌄</span></button>
 					<Menu anchorEl={language} open={Boolean(language)} onClose={() => setLanguage(null)}>
 						<MenuItem selected={locale === 'en'} onClick={() => { setLocale('en'); setLanguage(null); }}>English</MenuItem>
@@ -111,7 +112,7 @@ export default function SiteHeader() {
 						<MenuItem selected={locale === 'ko'} onClick={() => { setLocale('ko'); setLanguage(null); }}>한국어</MenuItem>
 						<MenuItem selected={locale === 'ru'} onClick={() => { setLocale('ru'); setLanguage(null); }}>Русский</MenuItem>
 					</Menu>
-					<IconButton aria-label={t('Search')} onClick={() => setSearchOpen(true)}><SearchRoundedIcon /></IconButton>
+					<IconButton aria-label={t('Search')} className="header-search-button" onClick={() => setSearchOpen(true)}><SearchRoundedIcon /></IconButton>
 					<NotificationBell enabled={isAuthenticated} memberId={memberId} />
 					{isAuthenticated && <IconButton component={Link} href="/my-page?tab=saved" aria-label="Saved pieces"><Badge badgeContent={0} color="primary"><FavoriteBorderRoundedIcon /></Badge></IconButton>}
 					{isAuthenticated && <IconButton aria-label="Shopping bag" component={Link} href="/cart"><Badge badgeContent={cartCount} color="primary"><ShoppingBagOutlinedIcon /></Badge></IconButton>}
@@ -129,7 +130,7 @@ export default function SiteHeader() {
 					</> : <IconButton component={Link} href="/sign-in?mode=signin" className="account-link" aria-label={t('Sign in or create an account')} title={t('Sign in or create an account')}><PersonOutlineRoundedIcon /></IconButton>}
 				</div>
 			</div>
-			{mobileOpen && <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation">{navLinks.map(([label, href]) => <Link key={href} href={href} onClick={() => setMobileOpen(false)}>{t(label)}<span>↗</span></Link>)}<button type="button" onClick={() => { setMobileOpen(false); setSearchOpen(true); }}>{t('Search')}<span>⌕</span></button><label className="mobile-language-picker">{t('Language')}<select aria-label={t('Language')} value={locale} onChange={(event) => setLocale(event.target.value as Locale)}><option value="en">English</option><option value="uz">O‘zbekcha</option><option value="ko">한국어</option><option value="ru">Русский</option></select></label>{isAuthenticated && <button type="button" onClick={logout}>{t('Log out')}<span>↗</span></button>}</nav>}
+			{mobileOpen && <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation">{!isAuthenticated && <div className="mobile-nav-auth"><Link href="/sign-in?mode=signin" onClick={() => setMobileOpen(false)}>{t('Log in')}<span>↗</span></Link><Link href="/sign-in?mode=signup" onClick={() => setMobileOpen(false)}>{t('Sign up')}<span>↗</span></Link></div>}{navLinks.map(([label, href]) => <Link key={href} href={href} onClick={() => setMobileOpen(false)}>{t(label)}<span>↗</span></Link>)}<button type="button" onClick={() => { setMobileOpen(false); setSearchOpen(true); }}>{t('Search')}<span>⌕</span></button><label className="mobile-language-picker">{t('Language')}<select aria-label={t('Language')} value={locale} onChange={(event) => setLocale(event.target.value as Locale)}><option value="en">English</option><option value="uz">O‘zbekcha</option><option value="ko">한국어</option><option value="ru">Русский</option></select></label>{isAuthenticated && <button type="button" onClick={logout}>{t('Log out')}<span>↗</span></button>}</nav>}
 			<HeaderSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 		</header>
 	);

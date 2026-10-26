@@ -1,7 +1,6 @@
 import PrivateMediaLink from "@/libs/auth/PrivateMediaLink";
-import { ensureAccessToken, getAccessToken } from "@/libs/auth";
-import { authValue } from "@/libs/auth";
-import { useEffect, useMemo, useState } from "react";
+import { ensureAccessToken } from "@/libs/auth";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_ATELIER_CHAT_HISTORY, GET_ATELIER_CONVERSATIONS } from "@/libs/graphql/ateliers";
 import { uploadGraphqlFiles } from "@/libs/utils/uploadGraphqlFiles";
@@ -21,6 +20,7 @@ export default function AtelierChatPanel({ atelier, memberId, ownerId }: { ateli
   const [files, setFiles] = useState<File[]>([]);
   const [socketError, setSocketError] = useState("");
   const [socketVersion, setSocketVersion] = useState(0);
+  const reconnectAttempts = useRef(0);
   const conversationsQuery = useQuery(GET_ATELIER_CONVERSATIONS, { variables: { atelier: atelier.slug }, skip: !isOwner, fetchPolicy: "network-only", pollInterval: isOwner ? 20000 : 0 });
   const conversations = conversationsQuery.data?.getAtelierConversations ?? [];
   const activeCustomerId = ownerResolved ? (isOwner ? selectedCustomer : memberId) : "";
@@ -29,10 +29,11 @@ export default function AtelierChatPanel({ atelier, memberId, ownerId }: { ateli
 
   useEffect(() => {
     setConnected(false); setSocketError("");
-    const token = authValue("accessToken");
-    if (!token || !memberId || !ownerId || !activeCustomerId) return;
+    if (!memberId || !ownerId || !activeCustomerId) return;
     const socket = new WebSocket(socketUrl);
     let disposed = false;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    let authRejected = false;
     let authenticatedToken = '', authPending: Promise<void> | undefined;
     let resolveAuth: (() => void) | undefined, rejectAuth: ((error: Error) => void) | undefined;
     let authTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -47,7 +48,7 @@ export default function AtelierChatPanel({ atelier, memberId, ownerId }: { ateli
       socket.send(JSON.stringify({ event: 'auth', data: { token:fresh, atelier:atelier.slug, customerId:isOwner?activeCustomerId:undefined } }));
       try { await authPending; authenticatedToken=fresh; } finally { clearTimeout(authTimeout); authPending=undefined; }
     };
-    const refreshChat = () => { if(!getAccessToken()){socket.close();return;} if(socket.readyState===WebSocket.OPEN)void authenticate().catch(error=>{ if (!disposed) setSocketError(error.message); }); };
+    const refreshChat = () => { if(socket.readyState===WebSocket.OPEN)void authenticate().catch(error=>{ if (!disposed) setSocketError(error.message); }); };
     socket.onopen = () => void authenticate().catch(error=>{ if (!disposed) setSocketError(error.message); });
     window.addEventListener('hadijam:token-updated',refreshChat);
     const sessionTimer=window.setInterval(refreshChat,30000);
@@ -55,24 +56,32 @@ export default function AtelierChatPanel({ atelier, memberId, ownerId }: { ateli
       if (disposed) return;
       try {
         const packet = JSON.parse(event.data); const data = packet?.data ?? packet;
-        if (packet.event === "auth:success" || packet.event === "atelier:joined") { setConnected(true); resolveAuth?.(); }
-        if (packet.event === "auth:error" || packet.event === "atelier:error") { setSocketError(data?.message ?? "The private chat connection could not be verified."); if(packet.event === "auth:error")rejectAuth?.(new Error(data?.message ?? "Chat authentication failed.")); }
+        if (packet.event === "auth:success" || packet.event === "atelier:joined") { setConnected(true); setSocketError(""); reconnectAttempts.current = 0; resolveAuth?.(); }
+        if (packet.event === "auth:error" || packet.event === "atelier:error") { setSocketError(data?.message ?? "The private chat connection could not be verified."); if(packet.event === "auth:error") { authRejected = true; setConnected(false); rejectAuth?.(new Error(data?.message ?? "Chat authentication failed.")); } }
         if (packet.event === "message:new") void historyQuery.refetch();
       } catch { setSocketError("The private chat returned an invalid response."); }
     };
     socket.onerror = () => { if (!disposed) setSocketError("The private chat connection is unavailable."); };
-    socket.onclose = () => { setConnected(false); rejectAuth?.(new Error("Chat is disconnected.")); };
+    socket.onclose = () => {
+      if (disposed) return;
+      setConnected(false); rejectAuth?.(new Error("Chat is disconnected."));
+      if (!authRejected && reconnectAttempts.current < 3) {
+        const delay = 1000 * 2 ** reconnectAttempts.current++;
+        setSocketError("Chat disconnected. Reconnecting…");
+        retryTimer = setTimeout(() => setSocketVersion(version => version + 1), delay);
+      } else if (!authRejected) setSocketError("Chat is disconnected. Please retry the connection.");
+    };
     const send = (event: Event) => { const detail=(event as CustomEvent).detail;
       if(detail?.atelier!==atelier.slug||detail?.customerId!==activeCustomerId)return;
       void authenticate().then(()=>{if(socket.readyState===WebSocket.OPEN)socket.send(JSON.stringify({event:'message:send',data:{messageContent:detail.messageContent,attachments:detail.attachments??[]}}));}).catch(error=>{ if (!disposed) setSocketError(error.message); });
     };
     window.addEventListener("hadijam:atelier-send", send);
-    return () => { disposed = true; socket.onmessage = null; socket.onerror = null; socket.onclose = null; rejectAuth?.(new Error("Chat connection changed.")); clearInterval(sessionTimer); clearTimeout(authTimeout); window.removeEventListener("hadijam:token-updated",refreshChat); window.removeEventListener("hadijam:atelier-send", send); socket.close(); };
+    return () => { disposed = true; clearTimeout(retryTimer); socket.onmessage = null; socket.onerror = null; socket.onclose = null; rejectAuth?.(new Error("Chat connection changed.")); clearInterval(sessionTimer); clearTimeout(authTimeout); window.removeEventListener("hadijam:token-updated",refreshChat); window.removeEventListener("hadijam:atelier-send", send); socket.close(); };
   }, [atelier.slug, memberId, ownerId, activeCustomerId, isOwner, socketVersion]);
 
   const send = async () => {
     const messageContent = text.trim(); if (!messageContent && !files.length) return;
-    if (!connected) { setSocketError("Connecting to the atelier… Please try again in a moment."); return; }
+    if (!connected) return;
     try {
       const attachments = files.length ? await uploadGraphqlFiles(files, "atelier") : [];
       window.dispatchEvent(new CustomEvent("hadijam:atelier-send", { detail: { atelier: atelier.slug, customerId: activeCustomerId, messageContent, attachments } }));
@@ -90,6 +99,7 @@ export default function AtelierChatPanel({ atelier, memberId, ownerId }: { ateli
       {files.length > 0 && <p className="atelier-attachment-list">{files.map((file) => file.name).join(", ")} <button type="button" onClick={() => setFiles([])}>Remove</button></p>}
     </>}
     <footer className="atelier-chat-footer"><span>Encrypted private atelier conversation</span><span>Message anytime</span></footer>
+    {memberId && ownerResolved && activeCustomerId && !connected && <button type="button" className="atelier-button" onClick={() => { reconnectAttempts.current = 0; setSocketVersion(version => version + 1); }}>Reconnect chat</button>}
     {socketError && <p className="atelier-chat-notice" role="status">{socketError}</p>}
   </section>;
 }
